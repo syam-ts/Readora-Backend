@@ -1,6 +1,7 @@
 import express from "express";
 import http from "node:http";
 import dotenv from "dotenv";
+import cors from 'cors';
 import { connectDB } from "./infrastructure/database/db";
 import userRouter from './infrastructure/http/routes/userRouter'
 import cookieparser from 'cookie-parser';
@@ -11,7 +12,13 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieparser())
-app.use('/', userRouter);
+app.use(
+    cors({
+        origin: process.env.FRONTEND_ORIGIN,
+        credentials: true
+    })
+)
+app.use('/user', userRouter);
 
 const server = http.createServer(app);
 
