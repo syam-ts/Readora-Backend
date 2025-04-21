@@ -38,7 +38,7 @@ export class UserRepositoryMongoose implements UserRepository {
         tags: string[],
         category: string
     ): Promise<any> {
-        
+
 
         const newArticle = new ArticleModel({
             userId,
@@ -73,7 +73,7 @@ export class UserRepositoryMongoose implements UserRepository {
 
             return articles;
         } else if (type === 'myArticles') {
-            const articles = await ArticleModel.find({userId: userId});
+            const articles = await ArticleModel.find({ userId: userId });
 
             if (!articles) throw new Error('no article found');
 
@@ -95,5 +95,14 @@ export class UserRepositoryMongoose implements UserRepository {
 
     async editProfile(userId: string): Promise<any> {
 
+    }
+
+
+    async monoArticleView(articleId: string): Promise<any> { 
+        const article = await ArticleModel.findById(articleId);
+
+        if (!article) throw new Error('No article found')
+
+        return article;
     }
 }

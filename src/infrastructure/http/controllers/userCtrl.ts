@@ -3,6 +3,7 @@ import { UserSignup } from "../../../application/services/userSignupService";
 import { UserLogin } from "../../../application/services/userLoginService";
 import { CreateArticle } from "../../../application/services/articleCreationService";
 import { ViewAllArtcles } from "../../../application/services/viewAllArticles";
+import { MonoArticleView } from "../../../application/services/monoArticleView";
 import { UserRepositoryMongoose } from "../../../domain/interfaces/Repositories/userRepository";
 import { HttpStatusCode } from "../../../helper/contants/enums";
 import { StatusMessage } from "../../../helper/contants/statusMessages";
@@ -11,6 +12,7 @@ const userSignupService = new UserSignup(new UserRepositoryMongoose());
 const userLoginService = new UserLogin(new UserRepositoryMongoose());
 const createArticleService = new CreateArticle(new UserRepositoryMongoose());
 const viewAllArtclesService = new ViewAllArtcles(new UserRepositoryMongoose());
+const monoArticleViewService = new MonoArticleView(new UserRepositoryMongoose());
 
 export class UserController {
     constructor() { }
@@ -91,6 +93,27 @@ export class UserController {
             const result = await viewAllArtclesService.execute(userId, type); 
 
             res.status(HttpStatusCode.CREATED).json({ message: StatusMessage[HttpStatusCode.OK],articles: result , success: true});
+        } catch (error: unknown) {
+            const err = error as {message: string}; 
+         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+          message: err.message,
+          success: false,
+        });
+      return;
+        }
+    }
+
+    async monoArticleView(req: any, res: Response): Promise<void> {
+        try { 
+         
+            const {articleId} = req.params;
+            const result = await monoArticleViewService.execute(articleId);  
+
+            res.status(HttpStatusCode.CREATED).json({ 
+                message: StatusMessage[HttpStatusCode.OK],
+                article: result , 
+                success: true
+            });
         } catch (error: unknown) {
             const err = error as {message: string}; 
          res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
