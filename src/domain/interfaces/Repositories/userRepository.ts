@@ -105,4 +105,12 @@ export class UserRepositoryMongoose implements UserRepository {
 
         return article;
     }
+
+    async viewUserProfile(userId: string): Promise<any> { 
+        const user = await UserModel.findById(userId);
+
+        if (!user) throw new Error('user not found')
+
+        return user;
+    }
 }

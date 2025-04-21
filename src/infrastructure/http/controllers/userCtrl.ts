@@ -2,8 +2,9 @@ import { Response } from "express";
 import { UserSignup } from "../../../application/services/userSignupService";
 import { UserLogin } from "../../../application/services/userLoginService";
 import { CreateArticle } from "../../../application/services/articleCreationService";
-import { ViewAllArtcles } from "../../../application/services/viewAllArticles";
-import { MonoArticleView } from "../../../application/services/monoArticleView";
+import { ViewAllArtcles } from "../../../application/services/viewAllArticlesService";
+import { MonoArticleView } from "../../../application/services/monoArticleViewService";
+import { ViewUserProfile } from "../../../application/services/viewUserProfileService";
 import { UserRepositoryMongoose } from "../../../domain/interfaces/Repositories/userRepository";
 import { HttpStatusCode } from "../../../helper/contants/enums";
 import { StatusMessage } from "../../../helper/contants/statusMessages";
@@ -13,6 +14,7 @@ const userLoginService = new UserLogin(new UserRepositoryMongoose());
 const createArticleService = new CreateArticle(new UserRepositoryMongoose());
 const viewAllArtclesService = new ViewAllArtcles(new UserRepositoryMongoose());
 const monoArticleViewService = new MonoArticleView(new UserRepositoryMongoose());
+const viewUserProfileService = new ViewUserProfile(new UserRepositoryMongoose());
 
 export class UserController {
     constructor() { }
@@ -112,6 +114,27 @@ export class UserController {
             res.status(HttpStatusCode.CREATED).json({ 
                 message: StatusMessage[HttpStatusCode.OK],
                 article: result , 
+                success: true
+            });
+        } catch (error: unknown) {
+            const err = error as {message: string}; 
+         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+          message: err.message,
+          success: false,
+        });
+      return;
+        }
+    }
+
+    async viewUserProfile(req: any, res: Response): Promise<void> {
+        try { 
+         
+            const {userId} = req.params;
+            const result = await viewUserProfileService.execute(userId);  
+
+            res.status(HttpStatusCode.CREATED).json({ 
+                message: StatusMessage[HttpStatusCode.OK],
+                user: result , 
                 success: true
             });
         } catch (error: unknown) {

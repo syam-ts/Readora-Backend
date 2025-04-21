@@ -9,5 +9,6 @@ userRouter.post('/login', userCtrl.loginUser);
 userRouter.post('/createArticle/:userId', userCtrl.crateArticle);
 userRouter.get('/viewAllArticles/:type', userCtrl.viewAllArticle);
 userRouter.get('/monoArticleView/:articleId', userCtrl.monoArticleView);
+userRouter.get('/profile/:userId', userCtrl.viewUserProfile);
 
 export default userRouter;
