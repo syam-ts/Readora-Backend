@@ -32,19 +32,22 @@ export class UserRepositoryMongoose implements UserRepository {
     async createArticle(
         userId: string,
         title: string,
+        subtitle: string,
         description: string,
         image: string,
         tags: string[],
-        categories: string[]
+        category: string
     ): Promise<any> {
+        
 
         const newArticle = new ArticleModel({
             userId,
+            subtitle,
             title,
             description,
             image,
             tags,
-            categories,
+            category,
             createdAt: Date.now()
         });
 

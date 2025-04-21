@@ -46,24 +46,28 @@ export class UserController {
 
     async crateArticle(req: any, res: Response): Promise<void> {
         try {
+            const {userId} = req.params;
+            
             const { 
-                userId,
                 title,  
+                subtitle,
                 description,
                 image,
                 tags,
-                categories
+                category
               } = req.body; 
+              console.log('The body: ', req.body)
               
 
             const result = await createArticleService.execute(
                 userId,
                 title,  
+                subtitle,
                 description,
                 image,
                 tags,
-                categories);
-                console.log('result: ', result);
+                category);
+            
 
             res.status(HttpStatusCode.CREATED).json({ message: StatusMessage[HttpStatusCode.OK] , success: true});
         } catch (error: unknown) {
