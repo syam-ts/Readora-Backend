@@ -46,14 +46,19 @@ export class UserController {
 
     async crateArticle(req: any, res: Response): Promise<void> {
         try {
-            const { title,  
+            const { 
+                userId,
+                title,  
                 description,
                 image,
                 tags,
                 categories
               } = req.body; 
+              
 
-            const result = await createArticleService.execute(title,  
+            const result = await createArticleService.execute(
+                userId,
+                title,  
                 description,
                 image,
                 tags,
@@ -76,8 +81,10 @@ export class UserController {
         try {
          
             const userId = 'dummy userId'
+            console.log('the params ', req.params.type)
+            const {type} = req.params;
 
-            const result = await viewAllArtclesService.execute(userId); 
+            const result = await viewAllArtclesService.execute(userId, type); 
 
             res.status(HttpStatusCode.CREATED).json({ message: StatusMessage[HttpStatusCode.OK],articles: result , success: true});
         } catch (error: unknown) {

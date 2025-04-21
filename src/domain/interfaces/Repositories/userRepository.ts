@@ -1,6 +1,6 @@
 import { User, UserModel } from "../../entities/User";
 import { UserRepository } from "../../../application/services/userSignupService";
-import { ArticleModel } from "../../entities/Article";
+import { Article, ArticleModel } from "../../entities/Article";
 
 export class UserRepositoryMongoose implements UserRepository {
     async createUser(email: string, password: string): Promise<any> {
@@ -30,45 +30,67 @@ export class UserRepositoryMongoose implements UserRepository {
     }
 
     async createArticle(
+        userId: string,
         title: string,
         description: string,
         image: string,
         tags: string[],
         categories: string[]
     ): Promise<any> {
-        console.log('The data: ', title)
+
         const newArticle = new ArticleModel({
+            userId,
             title,
             description,
             image,
             tags,
-            categories
+            categories,
+            createdAt: Date.now()
         });
 
         const savedArticle = newArticle.save();
 
         return savedArticle;
-     }
+    }
 
 
-     async viewAllArticles(userId: string): Promise<any> {
-        const articles = await ArticleModel.find();
-
-        if(!articles) throw new Error('no article found');
-
-        return articles;
-     }
-
-     async viewMyArticles(userId: string): Promise<any> {
-
-     }
-
-     async viewMyProfile(userId: string): Promise<any> {
-
-     }
+    async viewAllArticles(userId: string, type: string): Promise<any> {
 
 
-     async editProfile(userId: string): Promise<any> {
+        if (type === 'home') {
+            const articles = await ArticleModel.find();
 
-     }
+            if (!articles) throw new Error('no article found');
+
+            return articles;
+        } else if (type === 'trending') {
+            const articles = await ArticleModel.find().sort({ createdAt: -1 });
+
+            if (!articles) throw new Error('no article found');
+
+            return articles;
+        } else if (type === 'myArticles') {
+            const articles = await ArticleModel.find({userId: userId});
+
+            if (!articles) throw new Error('no article found');
+
+            return articles;
+        } else {
+            throw new Error('Wrong selection');
+        }
+
+    }
+
+    async viewMyArticles(userId: string): Promise<any> {
+
+    }
+
+    async viewMyProfile(userId: string): Promise<any> {
+
+    }
+
+
+    async editProfile(userId: string): Promise<any> {
+
+    }
 }

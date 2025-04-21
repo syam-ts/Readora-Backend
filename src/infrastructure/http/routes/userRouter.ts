@@ -7,6 +7,6 @@ const userCtrl = new UserController();
 userRouter.post("/signup", userCtrl.signupUser);
 userRouter.post('/login', userCtrl.loginUser);
 userRouter.post('/createArticle', userCtrl.crateArticle);
-userRouter.get('/viewAllArticles', userCtrl.viewAllArticle);
+userRouter.get('/viewAllArticles/:type', userCtrl.viewAllArticle);
 
 export default userRouter;
