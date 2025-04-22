@@ -38,8 +38,6 @@ export class UserRepositoryMongoose implements UserRepository {
         tags: string[],
         category: string
     ): Promise<any> {
-
-
         const newArticle = new ArticleModel({
             userId,
             subtitle,
@@ -48,7 +46,7 @@ export class UserRepositoryMongoose implements UserRepository {
             image,
             tags,
             category,
-            createdAt: Date.now()
+            createdAt: Date.now(),
         });
 
         const savedArticle = newArticle.save();
@@ -56,61 +54,86 @@ export class UserRepositoryMongoose implements UserRepository {
         return savedArticle;
     }
 
-
     async viewAllArticles(userId: string, type: string): Promise<any> {
-
-
-        if (type === 'home') {
+        if (type === "home") {
             const articles = await ArticleModel.find();
 
-            if (!articles) throw new Error('no article found');
+            if (!articles) throw new Error("no article found");
 
             return articles;
-        } else if (type === 'trending') {
+        } else if (type === "trending") {
             const articles = await ArticleModel.find().sort({ createdAt: -1 });
 
-            if (!articles) throw new Error('no article found');
+            if (!articles) throw new Error("no article found");
 
             return articles;
-        } else if (type === 'myArticles') {
+        } else if (type === "myArticles") {
             const articles = await ArticleModel.find({ userId: userId });
 
-            if (!articles) throw new Error('no article found');
+            if (!articles) throw new Error("no article found");
 
             return articles;
         } else {
-            throw new Error('Wrong selection');
+            throw new Error("Wrong selection");
         }
-
     }
 
-    async viewMyArticles(userId: string): Promise<any> {
+    async viewMyArticles(userId: string): Promise<any> { }
 
-    }
-
-    async viewMyProfile(userId: string): Promise<any> {
-
-    }
-
-
-    async editProfile(userId: string): Promise<any> {
-
-    }
-
-
-    async monoArticleView(articleId: string): Promise<any> { 
+    async monoArticleView(articleId: string): Promise<any> {
         const article = await ArticleModel.findById(articleId);
 
-        if (!article) throw new Error('No article found')
+        if (!article) throw new Error("No article found");
 
         return article;
     }
 
-    async viewUserProfile(userId: string): Promise<any> { 
+    async viewUserProfile(userId: string): Promise<any> {
         const user = await UserModel.findById(userId);
 
-        if (!user) throw new Error('user not found')
+        if (!user) throw new Error("user not found");
 
         return user;
+    }
+
+    async editProfile(
+        userId: string,
+        name: string,
+        profilePicture: string,
+        phone: number,
+        dob: number,
+        preferences: string[]
+    ): Promise<any> {
+        function parseDOBString(dobStr: string): Date {
+            const [day, month, year] = dobStr.split("/");
+            const formatted = `${year}-${month}-${day}`; // convert to ISO format: yyyy-mm-dd
+            const date = new Date(formatted);
+            if (isNaN(date.getTime())) {
+                throw new Error("Invalid date format for dob");
+            }
+            return date;
+        }
+
+        const editData = {
+            name,
+            profilePicture,
+            phone: Number(phone),
+            dob: dob,
+            preferences,
+        };
+
+        const editProfile = await UserModel.findByIdAndUpdate(
+            userId,
+            {
+                ...editData,
+            },
+            {
+                new: true,
+            }
+        );
+
+        if (!editProfile) throw new Error("user not found");
+
+        return editProfile;
     }
 }

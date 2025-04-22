@@ -5,6 +5,7 @@ import { CreateArticle } from "../../../application/services/articleCreationServ
 import { ViewAllArtcles } from "../../../application/services/viewAllArticlesService";
 import { MonoArticleView } from "../../../application/services/monoArticleViewService";
 import { ViewUserProfile } from "../../../application/services/viewUserProfileService";
+import { EditProfile } from "../../../application/services/editProfileService";
 import { UserRepositoryMongoose } from "../../../domain/interfaces/Repositories/userRepository";
 import { HttpStatusCode } from "../../../helper/contants/enums";
 import { StatusMessage } from "../../../helper/contants/statusMessages";
@@ -15,6 +16,7 @@ const createArticleService = new CreateArticle(new UserRepositoryMongoose());
 const viewAllArtclesService = new ViewAllArtcles(new UserRepositoryMongoose());
 const monoArticleViewService = new MonoArticleView(new UserRepositoryMongoose());
 const viewUserProfileService = new ViewUserProfile(new UserRepositoryMongoose());
+const editProfileService = new EditProfile(new UserRepositoryMongoose());
 
 export class UserController {
     constructor() { }
@@ -131,6 +133,42 @@ export class UserController {
          
             const {userId} = req.params;
             const result = await viewUserProfileService.execute(userId);  
+
+            res.status(HttpStatusCode.CREATED).json({ 
+                message: StatusMessage[HttpStatusCode.OK],
+                user: result , 
+                success: true
+            });
+        } catch (error: unknown) {
+            const err = error as {message: string}; 
+         res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+          message: err.message,
+          success: false,
+        });
+      return;
+        }
+    }
+
+
+    async editProfile(req: any, res: Response): Promise<void> {
+        try { 
+         
+            const {
+                userId,
+                 name,
+                profilePicture,
+                phone,
+                dob,
+                preferences
+            } = req.body.body;
+            const result = await editProfileService.execute(
+                userId,
+                name,
+               profilePicture,
+               phone,
+               dob,
+               preferences
+            );  
 
             res.status(HttpStatusCode.CREATED).json({ 
                 message: StatusMessage[HttpStatusCode.OK],

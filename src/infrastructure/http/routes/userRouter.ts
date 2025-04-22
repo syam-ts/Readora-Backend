@@ -4,11 +4,13 @@ const userRouter = express.Router();
 
 const userCtrl = new UserController();
 
-userRouter.post("/signup", userCtrl.signupUser);
-userRouter.post('/login', userCtrl.loginUser);
-userRouter.post('/createArticle/:userId', userCtrl.crateArticle);
 userRouter.get('/viewAllArticles/:type', userCtrl.viewAllArticle);
 userRouter.get('/monoArticleView/:articleId', userCtrl.monoArticleView);
 userRouter.get('/profile/:userId', userCtrl.viewUserProfile);
+
+userRouter.post('/profile-edit', userCtrl.editProfile);
+userRouter.post("/signup", userCtrl.signupUser);
+userRouter.post('/login', userCtrl.loginUser);
+userRouter.post('/createArticle/:userId', userCtrl.crateArticle);
 
 export default userRouter;
