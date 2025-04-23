@@ -30,6 +30,7 @@ export class CreateArticle {
             category,
         };
 
+          //validation using custom funciton  ------------->
         articleError(finalArticle, "create");
 
         return this.userRepository.createArticle(finalArticle);

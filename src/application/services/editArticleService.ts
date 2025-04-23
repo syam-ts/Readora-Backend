@@ -18,9 +18,9 @@ export class EditArticle {
     constructor(private userRespository: UserRepository) { }
 
     async execute(article: Article): Promise<any> {
-       articleError(article, 'edit');
-     
-         
+
+     //validation using custom funciton  ------------->
+        articleError(article, 'edit');
 
         return this.userRespository.editArticle(article);
     }
