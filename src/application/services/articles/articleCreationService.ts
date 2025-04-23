@@ -1,4 +1,4 @@
-import { articleError } from "../../utils/ErrorHandling/errorArticle";
+import { articleError } from "../../../utils/ErrorHandling/errorArticle";
 
 interface Article {
     userId: string;
