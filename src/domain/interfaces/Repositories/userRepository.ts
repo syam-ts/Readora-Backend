@@ -1,9 +1,21 @@
 import { User, UserModel } from "../../entities/User";
 import { UserRepository } from "../../../application/services/userSignupService";
-import { Article, ArticleModel } from "../../entities/Article";
+import { ArticleModel } from "../../entities/Article";
+
+type Id = string;
+
+interface Article {
+    articleId?: string;
+    title: string;
+    subtitle: string;
+    description: string;
+    image: string;
+    tags: string[];
+    category: string;
+}
 
 export class UserRepositoryMongoose implements UserRepository {
-    async createUser(email: string, password: string): Promise<any> {
+    async createUser(name: string, email: string, password: string): Promise<any> {
         const newUser = new UserModel({
             name,
             email,
@@ -54,7 +66,7 @@ export class UserRepositoryMongoose implements UserRepository {
         return savedArticle;
     }
 
-    async viewAllArticles(userId: string, type: string): Promise<any> {
+    async viewAllArticles(userId: Id, type: string): Promise<any> {
         if (type === "home") {
             const articles = await ArticleModel.find();
 
@@ -78,9 +90,9 @@ export class UserRepositoryMongoose implements UserRepository {
         }
     }
 
-    async viewMyArticles(userId: string): Promise<any> { }
+    async viewMyArticles(userId: Id): Promise<any> { }
 
-    async monoArticleView(articleId: string): Promise<any> {
+    async monoArticleView(articleId: Id): Promise<any> {
         const article = await ArticleModel.findById(articleId);
 
         if (!article) throw new Error("No article found");
@@ -88,7 +100,7 @@ export class UserRepositoryMongoose implements UserRepository {
         return article;
     }
 
-    async viewUserProfile(userId: string): Promise<any> {
+    async viewUserProfile(userId: Id): Promise<any> {
         const user = await UserModel.findById(userId);
 
         if (!user) throw new Error("user not found");
@@ -97,7 +109,7 @@ export class UserRepositoryMongoose implements UserRepository {
     }
 
     async editProfile(
-        userId: string,
+        userId: Id,
         name: string,
         profilePicture: string,
         phone: number,
@@ -136,4 +148,48 @@ export class UserRepositoryMongoose implements UserRepository {
 
         return editProfile;
     }
-}
+
+
+    async editArticle(
+        article: Article
+    ): Promise<any> {
+        const {
+            articleId,
+            title,
+            subtitle,
+            description,
+            image,
+            tags,
+            category
+         } = article;
+
+        const editData = {
+            title,
+            subtitle,
+            description,
+            image,
+            tags,
+            category
+        }
+        const editedArticle = await ArticleModel.findByIdAndUpdate(articleId, {
+            ...editData
+        }, {
+            new: true
+        });
+
+        if (!editedArticle) throw new Error('Article not found');
+
+        console.log('The result of edit article: ', editedArticle);
+
+        return editedArticle;
+    }
+
+
+    async deleteArticle(articleId: Id): Promise<any> {
+
+        const deleteArticle = await ArticleModel.findByIdAndDelete(articleId);
+
+        if (!deleteArticle) throw new Error('Article not founded');
+        return deleteArticle;
+    }
+} 

@@ -8,14 +8,14 @@ interface User {
 
 
 export interface UserRepository {
-    createUser(email: string, password: string): Promise<User>;
+    createUser(name: string, email: string, password: string): Promise<User>;
 }
 
 export class UserSignup {
     constructor(private userRepository: UserRepository ) {};
 
-    async execute(email: string, password: string): Promise<User> {
-        return await this.userRepository.createUser(email, password);
+    async execute(name: string, email: string, password: string): Promise<User> {
+        return await this.userRepository.createUser(name, email, password);
 
     }
 

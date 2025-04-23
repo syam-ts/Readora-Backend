@@ -22,7 +22,7 @@ export class CreateArticle {
         tags: string[],
         category: string
     ): Promise<any> {
-        const result = this.userRepository.createArticle(
+        return this.userRepository.createArticle(
             userId,
             title,
             subtitle,
@@ -31,7 +31,5 @@ export class CreateArticle {
             tags,
             category
         );
-
-        return result;
     }
 }
