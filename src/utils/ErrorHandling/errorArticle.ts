@@ -1,5 +1,6 @@
 interface Article {
-    articleId: string;
+    articleId?: string;
+    userId?: string;
     title: string;
     subtitle: string;
     description: string;
@@ -8,11 +9,26 @@ interface Article {
     category: string;
 }
 
-export const articleError = (article: Article): void => {
-    const { articleId, title, subtitle, description, image, tags, category } =
-        article;
+export const articleEditError = (
+    article: Article,
+    modifyType: string
+): void => {
+    const { title, subtitle, description, image, tags, category } = article;
 
-    if (!articleId) throw new Error("Article id is missing");
+    let id;
+
+    if (modifyType === "create") {
+        const { userId } = article;
+        if (!userId) throw new Error("User id is missing");
+        id = userId;
+
+        if (!userId) throw new Error("UserId id is missing");
+    } else {
+        const { articleId } = article;
+
+        if (!articleId) throw new Error("Article id is missing");
+        id = articleId;
+    }
 
     if (title.length < 10 || title.length > 40)
         throw new Error("Title should be between 10 to 40 characters");

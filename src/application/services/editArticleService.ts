@@ -1,4 +1,4 @@
-import { articleError } from "../../utils/ErrorHandling/error";
+import { articleEditError } from "../../utils/ErrorHandling/errorArticle";
 
 interface Article {
     articleId: string;
@@ -18,7 +18,7 @@ export class EditArticle {
     constructor(private userRespository: UserRepository) { }
 
     async execute(article: Article): Promise<any> {
-       articleError(article);
+       articleEditError(article, 'edit');
      
          
 
