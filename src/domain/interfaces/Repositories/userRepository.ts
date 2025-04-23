@@ -1,5 +1,5 @@
 import { User, UserModel } from "../../entities/User";
-import { UserRepository } from "../../../application/services/userSignupService";
+import { UserRepository } from "../../../application/services/users/userSignupService";
 import { ArticleModel } from "../../entities/Article";
 
 type Id = string;
