@@ -57,30 +57,19 @@ export class UserController {
 
     async crateArticle(req: any, res: Response): Promise<void> {
         try {
-            const { userId } = req.params;
-
-            const {
-                title,
-                subtitle,
-                description,
-                image,
-                tags,
-                category
-            } = req.body;
-            console.log('The body: ', req.body)
-
+            const { userId } = req.params; 
 
             const result = await createArticleService.execute(
                 userId,
-                title,
-                subtitle,
-                description,
-                image,
-                tags,
-                category);
+               req.body
+            );
 
 
-            res.status(HttpStatusCode.CREATED).json({ message: StatusMessage[HttpStatusCode.OK], success: true });
+            res.status(HttpStatusCode.CREATED).json({ 
+                message: StatusMessage[HttpStatusCode.OK],
+                article: result,
+                 success: true
+                 });
         } catch (error: unknown) {
             const err = error as { message: string };
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -193,8 +182,7 @@ export class UserController {
 
     async editArticle(req: any, res: Response): Promise<void> {
         try {
- 
-
+  
             const result = await editArticleService.execute(
                req.body
             );

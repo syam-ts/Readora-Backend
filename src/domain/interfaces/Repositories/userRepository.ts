@@ -6,6 +6,7 @@ type Id = string;
 
 interface Article {
     articleId?: string;
+    userId?: string;
     title: string;
     subtitle: string;
     description: string;
@@ -15,7 +16,11 @@ interface Article {
 }
 
 export class UserRepositoryMongoose implements UserRepository {
-    async createUser(name: string, email: string, password: string): Promise<any> {
+    async createUser(
+        name: string,
+        email: string,
+        password: string
+    ): Promise<any> {
         const newUser = new UserModel({
             name,
             email,
@@ -41,15 +46,10 @@ export class UserRepositoryMongoose implements UserRepository {
         return user;
     }
 
-    async createArticle(
-        userId: string,
-        title: string,
-        subtitle: string,
-        description: string,
-        image: string,
-        tags: string[],
-        category: string
-    ): Promise<any> {
+    async createArticle(article: Article): Promise<any> {
+        const { userId, title, subtitle, description, image, tags, category } =
+            article;
+
         const newArticle = new ArticleModel({
             userId,
             subtitle,
@@ -149,19 +149,9 @@ export class UserRepositoryMongoose implements UserRepository {
         return editProfile;
     }
 
-
-    async editArticle(
-        article: Article
-    ): Promise<any> {
-        const {
-            articleId,
-            title,
-            subtitle,
-            description,
-            image,
-            tags,
-            category
-         } = article;
+    async editArticle(article: Article): Promise<any> {
+        const { articleId, title, subtitle, description, image, tags, category } =
+            article;
 
         const editData = {
             title,
@@ -169,27 +159,29 @@ export class UserRepositoryMongoose implements UserRepository {
             description,
             image,
             tags,
-            category
-        }
-        const editedArticle = await ArticleModel.findByIdAndUpdate(articleId, {
-            ...editData
-        }, {
-            new: true
-        });
+            category,
+        };
+        const editedArticle = await ArticleModel.findByIdAndUpdate(
+            articleId,
+            {
+                ...editData,
+            },
+            {
+                new: true,
+            }
+        );
 
-        if (!editedArticle) throw new Error('Article not found');
+        if (!editedArticle) throw new Error("Article not found");
 
-        console.log('The result of edit article: ', editedArticle);
+        console.log("The result of edit article: ", editedArticle);
 
         return editedArticle;
     }
 
-
     async deleteArticle(articleId: Id): Promise<any> {
-
         const deleteArticle = await ArticleModel.findByIdAndDelete(articleId);
 
-        if (!deleteArticle) throw new Error('Article not founded');
+        if (!deleteArticle) throw new Error("Article not founded");
         return deleteArticle;
     }
-} 
+}

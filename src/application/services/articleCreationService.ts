@@ -1,35 +1,37 @@
+import { articleError } from "../../utils/ErrorHandling/errorArticle";
+
+interface Article {
+    userId: string;
+    title: string;
+    subtitle: string;
+    description: string;
+    image: string;
+    tags: string[];
+    category: string;
+}
+
 export interface UserRepository {
-    createArticle(
-        userId: string,
-        title: string,
-        subtitle: string,
-        description: string,
-        image: string,
-        tags: string[],
-        category: string
-    ): Promise<any>;
+    createArticle(finalArticle: Article): Promise<any>;
 }
 
 export class CreateArticle {
     constructor(private userRepository: UserRepository) { }
 
-    async execute(
-        userId: string,
-        title: string,
-        subtitle: string,
-        description: string,
-        image: string,
-        tags: string[],
-        category: string
-    ): Promise<any> {
-        return this.userRepository.createArticle(
+    async execute(userId: string, article: Article): Promise<any> {
+        const { title, subtitle, description, image, tags, category } = article;
+
+        const finalArticle = {
             userId,
             title,
             subtitle,
             description,
             image,
             tags,
-            category
-        );
+            category,
+        };
+
+        articleError(finalArticle, "create");
+
+        return this.userRepository.createArticle(finalArticle);
     }
 }

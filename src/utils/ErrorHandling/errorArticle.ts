@@ -9,7 +9,7 @@ interface Article {
     category: string;
 }
 
-export const articleEditError = (
+export const articleError = (
     article: Article,
     modifyType: string
 ): void => {
