@@ -1,34 +1,24 @@
+import { profileError } from "../../../utils/ErrorHandling/errorArticle";
 
-
+interface User {
+    userId: string;
+    name: string;
+    profilePicture: string;
+    phone: number;
+    dob: number;
+    preferences: string[];
+}
 
 export interface UserRepository {
-    editProfile(userId: string,
-        name: string,
-        profilePicture: string,
-        phone: number,
-        dob: number,
-        preferences: string[]): Promise<any>;
+    editProfile(user: User): Promise<any>;
 }
 
 export class EditProfile {
-    constructor(private userRepository: UserRepository) { };
+    constructor(private userRepository: UserRepository) { }
 
-    async execute(userId: string,
-        name: string,
-        profilePicture: string,
-        phone: number,
-        dob: number,
-        preferences: string[]): Promise<any> {
+    async execute(user: User): Promise<any> {
 
-        return await this.userRepository.editProfile(
-            userId,
-            name,
-            profilePicture,
-            phone,
-            dob,
-            preferences
-        );
-
+        profileError(user);
+        return await this.userRepository.editProfile(user);
     }
-
 }

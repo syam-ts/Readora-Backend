@@ -16,10 +16,11 @@ interface Article {
 }
 
 export class UserRepositoryMongoose implements UserRepository {
-    async createUser(
-        credentials: { name: string, email: string, password: string }
-    ): Promise<any> {
-
+    async createUser(credentials: {
+        name: string;
+        email: string;
+        password: string;
+    }): Promise<any> {
         const { name, email, password } = credentials;
 
         const newUser = new UserModel({
@@ -63,7 +64,7 @@ export class UserRepositoryMongoose implements UserRepository {
             image,
             tags,
             category,
-            createdAt: Date.now(),
+            createdAt: new Date(),
         });
 
         const savedArticle = newArticle.save();
@@ -113,24 +114,17 @@ export class UserRepositoryMongoose implements UserRepository {
         return user;
     }
 
-    async editProfile(
-        userId: Id,
-        name: string,
-        profilePicture: string,
-        phone: number,
-        dob: number,
-        preferences: string[]
-    ): Promise<any> {
-        function parseDOBString(dobStr: string): Date {
-            const [day, month, year] = dobStr.split("/");
-            const formatted = `${year}-${month}-${day}`; // convert to ISO format: yyyy-mm-dd
-            const date = new Date(formatted);
-            if (isNaN(date.getTime())) {
-                throw new Error("Invalid date format for dob");
-            }
-            return date;
-        }
-
+    async editProfile(user: {
+        userId: Id;
+        name: string;
+        profilePicture: string;
+        phone: number;
+        dob: number;
+        preferences: string[];
+    }): Promise<any> {
+ 
+        const { userId, name, profilePicture, phone, dob, preferences } = user; 
+ 
         const editData = {
             name,
             profilePicture,

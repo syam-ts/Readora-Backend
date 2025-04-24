@@ -148,22 +148,9 @@ export class UserController {
 
     async editProfile(req: any, res: Response): Promise<void> {
         try {
-
-            const {
-                userId,
-                name,
-                profilePicture,
-                phone,
-                dob,
-                preferences
-            } = req.body.body;
+ 
             const result = await editProfileService.execute(
-                userId,
-                name,
-                profilePicture,
-                phone,
-                dob,
-                preferences
+                req.body
             );
 
             res.status(HttpStatusCode.CREATED).json({

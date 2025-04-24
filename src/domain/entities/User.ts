@@ -6,7 +6,7 @@ export interface User extends Document {
     password: string;
     profilePicture: string;
     phone: number;
-    dob: Date;
+    dob: number;
     preferences: string[];
 }
 
@@ -16,7 +16,7 @@ export const UserSchema: Schema = new Schema({
     password: { type: String, requied: true },
     profilePicture: { type: String, requied: true },
     phone: { type: Number, requied: true },
-    dob: { type: Date, requied: true },
+    dob: { type: Number, requied: true },
     preferences: [{ type: String, requied: true }],
 });
 
