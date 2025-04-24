@@ -23,25 +23,27 @@ const editArticleService = new EditArticle(new UserRepositoryMongoose());
 const deleteArticleService = new DeleteArticle(new UserRepositoryMongoose());
 
 export class UserController {
-    constructor() { }
+    constructor() {}
 
-    async signupUser(req: any, res: Response): Promise<any> {
-        try {
-            const { name, email, password } = req.body;
-            console.log('body: ', req.body)
+    async signupUser(req: any, res: Response): Promise<void> {
+        try { 
 
-            const result = await userSignupService.execute(name, email, password);
+            const result = await userSignupService.execute(req.body);
+
             res.status(HttpStatusCode.OK).json({ message: StatusMessage[HttpStatusCode.OK], user: result, success: true });
-        } catch (err: unknown) {
-            console.log("ERROR: ", err);
+        } catch (error: unknown) {
+            const err = error as { message: string };
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message: err.message,
+                success: false,
+            });
+            return;
         }
     }
 
     async loginUser(req: any, res: Response): Promise<void> {
-        try {
-            const { email, password } = req.body;
-
-            const result = await userLoginService.execute(email, password);
+        try {  
+            const result = await userLoginService.execute(req.body);
 
             res.status(HttpStatusCode.OK).json({ message: StatusMessage[HttpStatusCode.OK], user: result, success: true });
         } catch (error: unknown) {

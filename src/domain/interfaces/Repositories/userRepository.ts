@@ -17,10 +17,11 @@ interface Article {
 
 export class UserRepositoryMongoose implements UserRepository {
     async createUser(
-        name: string,
-        email: string,
-        password: string
+        credentials: { name: string, email: string, password: string }
     ): Promise<any> {
+
+        const { name, email, password } = credentials;
+
         const newUser = new UserModel({
             name,
             email,
@@ -36,7 +37,11 @@ export class UserRepositoryMongoose implements UserRepository {
         return savedUser.toObject();
     }
 
-    async loginUser(email: string, password: string): Promise<any> {
+    async loginUser(credentials: {
+        email: string;
+        password: string;
+    }): Promise<any> {
+        const { email, password } = credentials;
         const user = await UserModel.findOne({ email, password });
 
         console.log("The ueser: ", user);

@@ -1,3 +1,5 @@
+import { signupError } from "../../../utils/ErrorHandling/errorArticle";
+
 interface User {
     _id: string;
     name: string;
@@ -6,16 +8,24 @@ interface User {
     dob: number;
 }
 
+interface Credentials {
+    name: string
+    email: string
+    password: string
+}
+
 
 export interface UserRepository {
-    createUser(name: string, email: string, password: string): Promise<User>;
+    createUser(credentials: Credentials): Promise<User>;
 }
 
 export class UserSignup {
-    constructor(private userRepository: UserRepository ) {};
+    constructor(private userRepository: UserRepository) { };
 
-    async execute(name: string, email: string, password: string): Promise<User> {
-        return await this.userRepository.createUser(name, email, password);
+    async execute(credentials: Credentials): Promise<User> {
+
+        signupError(credentials)
+        return await this.userRepository.createUser(credentials);
 
     }
 

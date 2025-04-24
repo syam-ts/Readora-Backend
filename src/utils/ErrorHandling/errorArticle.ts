@@ -9,10 +9,18 @@ interface Article {
     category: string;
 }
 
-export const articleError = (
-    article: Article,
-    modifyType: string
-): void => {
+interface LoginCredentials {
+    email: string;
+    password: string;
+}
+
+interface SignupCredentials {
+    name: string;
+    email: string;
+    password: string;
+}
+
+export const articleError = (article: Article, modifyType: string): void => {
     const { title, subtitle, description, image, tags, category } = article;
 
     let id;
@@ -46,6 +54,52 @@ export const articleError = (
 
     if (category.length < 3 || category.length > 10)
         throw new Error("Category should be between 3 to 10 characters");
+
+    return;
+};
+
+export const loginError = (credentials: LoginCredentials) => {
+    const { email, password } = credentials;
+
+    const emailRegex = /\S+@\S+\.\S+/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,10}$/;
+
+    if (email.length < 10 || email.length > 30 || !emailRegex.test(email)) {
+        throw new Error("Email should be valid and 10–20 characters long");
+    }
+
+    if (!passwordRegex.test(password)) {
+        throw new Error(
+            "Password must be 8-10 characters long, contain at least 1 lowercase letter and 1 number."
+        );
+    }
+
+    return;
+};
+
+export const signupError = (credentials: SignupCredentials) => {
+    const { name, email, password } = credentials;
+
+    const emailRegex = /\S+@\S+\.\S+/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,10}$/;
+
+    if (!name || !email || !password) {
+        throw new Error("All fields need to be filled");
+    }
+
+    if (name.length < 5 || name.length > 20) {
+        throw new Error("Name should between 5–20 characters");
+    }
+
+    if (email.length < 10 || email.length > 30 || !emailRegex.test(email)) {
+        throw new Error("Email should be valid and 10–20 characters long");
+    }
+
+    if (!passwordRegex.test(password)) {
+        throw new Error(
+            "Password must be 8-10 characters long, contain at least 1 lowercase letter and 1 number."
+        );
+    }
 
     return;
 };

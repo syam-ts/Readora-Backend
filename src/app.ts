@@ -18,7 +18,7 @@ app.use(
         credentials: true
     })
 )
-app.use('/user', userRouter);
+app.use('/', userRouter);
 
 const server = http.createServer(app);
 
