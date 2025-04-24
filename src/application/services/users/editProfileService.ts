@@ -1,4 +1,4 @@
-import { profileError } from "../../../utils/ErrorHandling/errorArticle";
+import { profileError } from "../../../utils/ErrorHandling/errorUserProfile";
 
 interface User {
     userId: string;

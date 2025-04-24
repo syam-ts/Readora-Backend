@@ -1,4 +1,4 @@
-import { loginError } from "../../../utils/ErrorHandling/errorArticle";
+import { loginError } from "../../../utils/ErrorHandling/errorLogin";
 
 interface User {
     _id: string;

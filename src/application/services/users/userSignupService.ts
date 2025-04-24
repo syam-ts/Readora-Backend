@@ -1,4 +1,4 @@
-import { signupError } from "../../../utils/ErrorHandling/errorArticle";
+import { signupError } from "../../../utils/ErrorHandling/errorSignup";
 
 interface User {
     _id: string;
