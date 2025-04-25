@@ -5,6 +5,7 @@ import { CreateArticle } from "../../../application/services/articles/articleCre
 import { ViewAllArtcles } from "../../../application/services/articles/viewAllArticlesService";
 import { MonoArticleView } from "../../../application/services/articles/monoArticleViewService";
 import { ViewUserProfile } from "../../../application/services/users/viewUserProfileService";
+import { ViewMyArtcles } from "../../../application/services/articles/viewMyArticlesService";
 import { EditProfile } from "../../../application/services/users/editProfileService";
 import { EditArticle } from "../../../application/services/articles/editArticleService";
 import { DeleteArticle } from "../../../application/services/articles/deleteArticleService";
@@ -18,6 +19,7 @@ const createArticleService = new CreateArticle(new UserRepositoryMongoose());
 const viewAllArtclesService = new ViewAllArtcles(new UserRepositoryMongoose());
 const monoArticleViewService = new MonoArticleView(new UserRepositoryMongoose());
 const viewUserProfileService = new ViewUserProfile(new UserRepositoryMongoose());
+const ViewMyArtclesService = new ViewMyArtcles(new UserRepositoryMongoose());
 const editProfileService = new EditProfile(new UserRepositoryMongoose());
 const editArticleService = new EditArticle(new UserRepositoryMongoose());
 const deleteArticleService = new DeleteArticle(new UserRepositoryMongoose());
@@ -167,6 +169,32 @@ export class UserController {
             return;
         }
     }
+
+    async viewMyArticles(req: any, res: Response): Promise<void> {
+        try {
+ 
+            const {userId } = req.params;
+
+            const result = await ViewMyArtclesService.execute(
+                userId
+            );
+
+            res.status(HttpStatusCode.CREATED).json({
+                message: StatusMessage[HttpStatusCode.OK],
+                articles : result,
+                success: true
+            });
+        } catch (error: unknown) {
+            const err = error as { message: string };
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message: err.message,
+                success: false,
+            });
+            return;
+        }
+    }
+
+
 
 
     async editArticle(req: any, res: Response): Promise<void> {

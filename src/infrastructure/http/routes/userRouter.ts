@@ -8,6 +8,8 @@ userRouter.get('/viewAllArticles/:type', userCtrl.viewAllArticle);//
 userRouter.get('/monoArticleView/:articleId', userCtrl.monoArticleView);//
 userRouter.get('/profile/:userId', userCtrl.viewUserProfile);
 
+userRouter.get('/user/articles/:userId', userCtrl.viewMyArticles)
+
 userRouter.post("/signup", userCtrl.signupUser);
 userRouter.post('/login', userCtrl.loginUser);
 userRouter.post('/article/:userId', userCtrl.crateArticle); //only for creating

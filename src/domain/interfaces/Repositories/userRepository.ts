@@ -45,8 +45,6 @@ export class UserRepositoryMongoose implements UserRepository {
         const { email, password } = credentials;
         const user = await UserModel.findOne({ email, password });
 
-        console.log("The ueser: ", user);
-
         if (!user) throw new Error("user not found");
 
         return user;
@@ -96,7 +94,15 @@ export class UserRepositoryMongoose implements UserRepository {
         }
     }
 
-    async viewMyArticles(userId: Id): Promise<any> { }
+    async viewMyArticles(userId: Id): Promise<Article> {
+        const myArticles = await ArticleModel.find({ userId: userId })
+            .lean<Article>()
+            .exec();
+
+        if (!myArticles) throw new Error("no articles found");
+
+        return myArticles;
+    }
 
     async monoArticleView(articleId: Id): Promise<any> {
         const article = await ArticleModel.findById(articleId);
@@ -122,9 +128,8 @@ export class UserRepositoryMongoose implements UserRepository {
         dob: number;
         preferences: string[];
     }): Promise<any> {
- 
-        const { userId, name, profilePicture, phone, dob, preferences } = user; 
- 
+        const { userId, name, profilePicture, phone, dob, preferences } = user;
+
         const editData = {
             name,
             profilePicture,
