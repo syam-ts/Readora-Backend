@@ -9,6 +9,8 @@ import { ViewMyArtcles } from "../../../application/services/articles/viewMyArti
 import { EditProfile } from "../../../application/services/users/editProfileService";
 import { EditArticle } from "../../../application/services/articles/editArticleService";
 import { DeleteArticle } from "../../../application/services/articles/deleteArticleService";
+import { LikeArticle } from "../../../application/services/likes/likeArticle";
+import { DislikeArticle } from "../../../application/services/likes/dislikeArticle";
 import { UserRepositoryMongoose } from "../../../domain/interfaces/Repositories/userRepository";
 import { HttpStatusCode } from "../../../helper/contants/enums";
 import { StatusMessage } from "../../../helper/contants/statusMessages";
@@ -18,16 +20,14 @@ const userSignupService = new UserSignup(new UserRepositoryMongoose());
 const userLoginService = new UserLogin(new UserRepositoryMongoose());
 const createArticleService = new CreateArticle(new UserRepositoryMongoose());
 const viewAllArtclesService = new ViewAllArtcles(new UserRepositoryMongoose());
-const monoArticleViewService = new MonoArticleView(
-    new UserRepositoryMongoose()
-);
-const viewUserProfileService = new ViewUserProfile(
-    new UserRepositoryMongoose()
-);
+const monoArticleViewService = new MonoArticleView(new UserRepositoryMongoose());
+const viewUserProfileService = new ViewUserProfile(new UserRepositoryMongoose());
 const ViewMyArtclesService = new ViewMyArtcles(new UserRepositoryMongoose());
 const editProfileService = new EditProfile(new UserRepositoryMongoose());
 const editArticleService = new EditArticle(new UserRepositoryMongoose());
 const deleteArticleService = new DeleteArticle(new UserRepositoryMongoose());
+const likeArticleService = new LikeArticle(new UserRepositoryMongoose());
+const dislikeArticleService = new DislikeArticle(new UserRepositoryMongoose());
 
 export class UserController {
     constructor() { }
@@ -233,6 +233,48 @@ export class UserController {
             const { articleId } = req.body;
 
             const result = await deleteArticleService.execute(articleId);
+
+            res.status(HttpStatusCode.CREATED).json({
+                message: StatusMessage[HttpStatusCode.OK],
+                article: result,
+                success: true,
+            });
+        } catch (error: unknown) {
+            const err = error as { message: string };
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message: err.message,
+                success: false,
+            });
+            return;
+        }
+    }
+
+    async likeArticle(req: Request, res: Response): Promise<void> {
+        try {
+            const { articleId } = req.params;
+
+            const result = await likeArticleService.execute(articleId);
+
+            res.status(HttpStatusCode.CREATED).json({
+                message: StatusMessage[HttpStatusCode.OK],
+                article: result,
+                success: true,
+            });
+        } catch (error: unknown) {
+            const err = error as { message: string };
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message: err.message,
+                success: false,
+            });
+            return;
+        }
+    }
+
+    async dislikeArticle(req: Request, res: Response): Promise<void> {
+        try {
+            const { articleId } = req.params;
+
+            const result = await dislikeArticleService.execute(articleId);
 
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],

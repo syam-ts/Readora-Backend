@@ -11,8 +11,7 @@ export class AuthController {
 
      refreshToken = (req: Request, res: Response): void => {
         const refreshToken = req.cookies.refreshToken;
-    
-        console.log('the token RTK: ',refreshToken);
+ 
         if (!refreshToken) {
             res.status(401).json({ message: "No refresh token" });
             return;

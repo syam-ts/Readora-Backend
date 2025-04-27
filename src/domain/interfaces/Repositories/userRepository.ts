@@ -43,30 +43,33 @@ export class UserRepositoryMongoose implements UserRepository {
         email: string;
         password: string;
     }): Promise<any> {
-        
         const { email, password } = credentials;
-        const user = await UserModel.findOne({ email, password }).lean<User>().exec(); 
-        if (!user) throw new Error("user not found"); 
+        const user = await UserModel.findOne({ email, password })
+            .lean<User>()
+            .exec();
+            console.log('the use', user)
+        if (!user) throw new Error("user not found");
 
-        if(user) {
+        if (user) {
             return {
                 _id: user._id,
                 name: user.name,
-                email: user.email, 
+                email: user.email,
                 profilePicture: user.profilePicture,
                 phone: user.phone,
                 dob: user.dob,
-                preferences: user.preferences
-            } as User
+                preferences: user.preferences,
+            } as User;
         }
     }
 
     async createArticle(article: Article): Promise<any> {
-        const { userId, title, subtitle, description, image, tags, category } = article;
+        const { userId, title, subtitle, description, image, tags, category } =
+            article;
 
-            const user = await UserModel.findById(userId).lean<User>();
-         
-            if(!user) throw new Error('user not found');
+        const user = await UserModel.findById(userId).lean<User>();
+
+        if (!user) throw new Error("user not found");
 
         const newArticle = new ArticleModel({
             userId,
@@ -86,14 +89,13 @@ export class UserRepositoryMongoose implements UserRepository {
     }
 
     async viewAllArticles(userId: Id): Promise<any> {
- 
         const user = await UserModel.findById(userId);
         if (!user) throw new Error("User not found");
 
         const preferences = user.preferences;
 
         const articles = await ArticleModel.find({
-            category: { $in: preferences }
+            category: { $in: preferences },
         });
 
         if (!articles) throw new Error("no article found");
@@ -193,5 +195,37 @@ export class UserRepositoryMongoose implements UserRepository {
 
         if (!deleteArticle) throw new Error("Article not founded");
         return deleteArticle;
+    }
+
+    async likeArticle(articleId: Id): Promise<any> {
+        const likeArticle = await ArticleModel.findByIdAndUpdate(
+            articleId,
+            {
+                $inc: { likes: 1 },
+            },
+            {
+                new: true,
+            }
+        );
+
+        if (!likeArticle) throw new Error("Article not found");
+
+        return likeArticle;
+    }
+
+    async dislikeArticle(articleId: Id): Promise<any> {
+        const dislikeArticle = await ArticleModel.findByIdAndUpdate(
+            articleId,
+            {
+                $inc: { dislikes: 1 },
+            },
+            {
+                new: true,
+            }
+        );
+
+        if (!dislikeArticle) throw new Error("Article not found");
+
+        return dislikeArticle;
     }
 }

@@ -18,7 +18,9 @@ userRouter.post('/article/:userId',verifyToken, userCtrl.crateArticle);
 userRouter.post('/refreshToken', authCtrl.refreshToken); 
 
 userRouter.put('/user/profile',verifyToken, userCtrl.editProfile);
-userRouter.put('/article',verifyToken, userCtrl.editArticle);//edit find path and query params difference
+userRouter.put('/article',verifyToken, userCtrl.editArticle);
+userRouter.put('/like/:articleId',verifyToken, userCtrl.likeArticle);
+userRouter.put('/dislike/:articleId',verifyToken, userCtrl.dislikeArticle);
 
 userRouter.delete('/article',verifyToken, userCtrl.deleteArticle) 
 
