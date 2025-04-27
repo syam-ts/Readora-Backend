@@ -5,6 +5,7 @@ import { ArticleModel } from "../../entities/Article";
 type Id = string;
 
 interface Article {
+    _id?: string;
     articleId?: string;
     userId?: string;
     title: string;
@@ -42,8 +43,10 @@ export class UserRepositoryMongoose implements UserRepository {
         email: string;
         password: string;
     }): Promise<any> {
+ 
+        
         const { email, password } = credentials;
-        const user = await UserModel.findOne({ email, password });
+        const user = await UserModel.find({ email, password });
 
         if (!user) throw new Error("user not found");
 
@@ -51,11 +54,15 @@ export class UserRepositoryMongoose implements UserRepository {
     }
 
     async createArticle(article: Article): Promise<any> {
-        const { userId, title, subtitle, description, image, tags, category } =
-            article;
+        const { userId, title, subtitle, description, image, tags, category } = article;
+
+            const user = await UserModel.findById(userId).lean<User>();
+         
+            if(!user) throw new Error('user not found');
 
         const newArticle = new ArticleModel({
             userId,
+            author: user.name,
             subtitle,
             title,
             description,
@@ -70,28 +77,19 @@ export class UserRepositoryMongoose implements UserRepository {
         return savedArticle;
     }
 
-    async viewAllArticles(userId: Id, type: string): Promise<any> {
-        if (type === "home") {
-            const articles = await ArticleModel.find();
+    async viewAllArticles(userId: Id): Promise<any> {
+ 
+        const user = await UserModel.findById(userId);
+        if (!user) throw new Error("User not found");
 
-            if (!articles) throw new Error("no article found");
+        const preferences = user.preferences;
 
-            return articles;
-        } else if (type === "trending") {
-            const articles = await ArticleModel.find().sort({ createdAt: -1 });
+        const articles = await ArticleModel.find({
+            category: { $in: preferences }
+        });
 
-            if (!articles) throw new Error("no article found");
-
-            return articles;
-        } else if (type === "myArticles") {
-            const articles = await ArticleModel.find({ userId: userId });
-
-            if (!articles) throw new Error("no article found");
-
-            return articles;
-        } else {
-            throw new Error("Wrong selection");
-        }
+        if (!articles) throw new Error("no article found");
+        return articles;
     }
 
     async viewMyArticles(userId: Id): Promise<Article> {
@@ -154,7 +152,7 @@ export class UserRepositoryMongoose implements UserRepository {
     }
 
     async editArticle(article: Article): Promise<any> {
-        const { articleId, title, subtitle, description, image, tags, category } =
+        const { _id, title, subtitle, description, image, tags, category } =
             article;
 
         const editData = {
@@ -166,7 +164,7 @@ export class UserRepositoryMongoose implements UserRepository {
             category,
         };
         const editedArticle = await ArticleModel.findByIdAndUpdate(
-            articleId,
+            _id,
             {
                 ...editData,
             },
@@ -177,7 +175,7 @@ export class UserRepositoryMongoose implements UserRepository {
 
         if (!editedArticle) throw new Error("Article not found");
 
-        console.log("The result of edit article: ", editedArticle);
+        // console.log("The result of edit article: ", editedArticle);
 
         return editedArticle;
     }

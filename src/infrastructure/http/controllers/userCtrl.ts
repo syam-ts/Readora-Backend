@@ -87,12 +87,10 @@ export class UserController {
 
     async viewAllArticle(req: any, res: Response): Promise<void> {
         try {
-
-            const userId = 'dummy userId'
-            console.log('the params ', req.params.type)
-            const { type } = req.params;
-
-            const result = await viewAllArtclesService.execute(userId, type);
+ 
+            const {userId} = req.params;
+            
+            const result = await viewAllArtclesService.execute(userId);
 
             res.status(HttpStatusCode.CREATED).json({ message: StatusMessage[HttpStatusCode.OK], articles: result, success: true });
         } catch (error: unknown) {

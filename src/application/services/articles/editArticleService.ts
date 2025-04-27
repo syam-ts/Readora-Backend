@@ -1,7 +1,8 @@
 import { articleError } from "../../../utils/ErrorHandling/errorArticle";
 
 interface Article {
-    articleId: string;
+    _id?: string;
+    articleId?: string;
     title: string;
     subtitle: string;
     description: string;

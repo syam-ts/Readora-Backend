@@ -1,4 +1,5 @@
 interface Article {
+    _id?: string;
     articleId?: string;
     userId?: string;
     title: string;
@@ -21,10 +22,10 @@ export const articleError = (article: Article, modifyType: string): void => {
 
         if (!userId) throw new Error("UserId id is missing");
     } else {
-        const { articleId } = article;
+        const { _id } = article;
 
-        if (!articleId) throw new Error("Article id is missing");
-        id = articleId;
+        if (!_id) throw new Error("Article id is missing");
+        id = _id;
     }
 
     if (title.length < 10 || title.length > 40)
@@ -32,9 +33,9 @@ export const articleError = (article: Article, modifyType: string): void => {
 
     if (subtitle.length < 10 || subtitle.length > 20)
         throw new Error("Subtitle should be between 10 to 20 characters");
-
-    if (description.length < 20 || description.length > 200)
-        throw new Error("Description should be between 20 to 200 characters");
+ 
+    if (description.length < 80 || description.length > 250)
+        throw new Error("Description should be between 80 to 250 characters");
 
     if (!image) throw new Error("Image need to be provided");
 

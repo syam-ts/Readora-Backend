@@ -2,6 +2,7 @@ import mongoose, { Document, Schema, model } from "mongoose";
 
 export interface Article extends Document {
     userId: string;
+    author: string;
     title: string;
     subtitle: string
     description: string;
@@ -14,6 +15,7 @@ export interface Article extends Document {
 //use tags for search
 export const ArticleSchema: Schema = new Schema({
     userId: { type: String, requied: true },
+    author: { type: String, requied: true },
     title: { type: String, requied: true },
     subtitle: { type: String, requied: true },
     description: { type: String, requied: true },
