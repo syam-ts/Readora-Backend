@@ -12,27 +12,37 @@ import { DeleteArticle } from "../../../application/services/articles/deleteArti
 import { UserRepositoryMongoose } from "../../../domain/interfaces/Repositories/userRepository";
 import { HttpStatusCode } from "../../../helper/contants/enums";
 import { StatusMessage } from "../../../helper/contants/statusMessages";
+import generateToken from "../../../utils/jwt/generateToken";
 
 const userSignupService = new UserSignup(new UserRepositoryMongoose());
 const userLoginService = new UserLogin(new UserRepositoryMongoose());
 const createArticleService = new CreateArticle(new UserRepositoryMongoose());
 const viewAllArtclesService = new ViewAllArtcles(new UserRepositoryMongoose());
-const monoArticleViewService = new MonoArticleView(new UserRepositoryMongoose());
-const viewUserProfileService = new ViewUserProfile(new UserRepositoryMongoose());
+const monoArticleViewService = new MonoArticleView(
+    new UserRepositoryMongoose()
+);
+const viewUserProfileService = new ViewUserProfile(
+    new UserRepositoryMongoose()
+);
 const ViewMyArtclesService = new ViewMyArtcles(new UserRepositoryMongoose());
 const editProfileService = new EditProfile(new UserRepositoryMongoose());
 const editArticleService = new EditArticle(new UserRepositoryMongoose());
 const deleteArticleService = new DeleteArticle(new UserRepositoryMongoose());
 
 export class UserController {
-    constructor() {}
+    constructor() { }
 
     async signupUser(req: any, res: Response): Promise<void> {
-        try { 
-
+        try {
             const result = await userSignupService.execute(req.body);
 
-            res.status(HttpStatusCode.OK).json({ message: StatusMessage[HttpStatusCode.OK], user: result, success: true });
+            res
+                .status(HttpStatusCode.OK)
+                .json({
+                    message: StatusMessage[HttpStatusCode.OK],
+                    user: result,
+                    success: true,
+                });
         } catch (error: unknown) {
             const err = error as { message: string };
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -44,10 +54,27 @@ export class UserController {
     }
 
     async loginUser(req: any, res: Response): Promise<void> {
-        try {  
-            const result = await userLoginService.execute(req.body);
+        try {
 
-            res.status(HttpStatusCode.OK).json({ message: StatusMessage[HttpStatusCode.OK], user: result, success: true });
+            const user = await userLoginService.execute(req.body); 
+            const { accessToken, refreshToken } = generateToken(user);
+            console.log('Refresh', refreshToken);
+
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none",
+            });
+
+            res
+                .status(HttpStatusCode.OK)
+                .json({
+                    message: StatusMessage[HttpStatusCode.OK],
+                    user,
+                    accessToken,
+                    refreshToken,
+                    success: true,
+                });
         } catch (error: unknown) {
             const err = error as { message: string };
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -57,23 +84,18 @@ export class UserController {
             return;
         }
     }
-
 
     async crateArticle(req: any, res: Response): Promise<void> {
         try {
-            const { userId } = req.params; 
+            const { userId } = req.params;
 
-            const result = await createArticleService.execute(
-                userId,
-               req.body
-            );
+            const result = await createArticleService.execute(userId, req.body);
 
-
-            res.status(HttpStatusCode.CREATED).json({ 
+            res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],
                 article: result,
-                 success: true
-                 });
+                success: true,
+            });
         } catch (error: unknown) {
             const err = error as { message: string };
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -84,15 +106,19 @@ export class UserController {
         }
     }
 
-
     async viewAllArticle(req: any, res: Response): Promise<void> {
         try {
- 
-            const {userId} = req.params;
-            
+            const { userId } = req.params;
+
             const result = await viewAllArtclesService.execute(userId);
 
-            res.status(HttpStatusCode.CREATED).json({ message: StatusMessage[HttpStatusCode.OK], articles: result, success: true });
+            res
+                .status(HttpStatusCode.CREATED)
+                .json({
+                    message: StatusMessage[HttpStatusCode.OK],
+                    articles: result,
+                    success: true,
+                });
         } catch (error: unknown) {
             const err = error as { message: string };
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -105,14 +131,13 @@ export class UserController {
 
     async monoArticleView(req: any, res: Response): Promise<void> {
         try {
-
             const { articleId } = req.params;
             const result = await monoArticleViewService.execute(articleId);
 
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],
                 article: result,
-                success: true
+                success: true,
             });
         } catch (error: unknown) {
             const err = error as { message: string };
@@ -126,14 +151,13 @@ export class UserController {
 
     async viewUserProfile(req: any, res: Response): Promise<void> {
         try {
-
             const { userId } = req.params;
             const result = await viewUserProfileService.execute(userId);
 
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],
                 user: result,
-                success: true
+                success: true,
             });
         } catch (error: unknown) {
             const err = error as { message: string };
@@ -145,18 +169,14 @@ export class UserController {
         }
     }
 
-
     async editProfile(req: any, res: Response): Promise<void> {
         try {
- 
-            const result = await editProfileService.execute(
-                req.body
-            );
+            const result = await editProfileService.execute(req.body);
 
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],
                 user: result,
-                success: true
+                success: true,
             });
         } catch (error: unknown) {
             const err = error as { message: string };
@@ -170,17 +190,14 @@ export class UserController {
 
     async viewMyArticles(req: any, res: Response): Promise<void> {
         try {
- 
-            const {userId } = req.params;
+            const { userId } = req.params;
 
-            const result = await ViewMyArtclesService.execute(
-                userId
-            );
+            const result = await ViewMyArtclesService.execute(userId);
 
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],
-                articles : result,
-                success: true
+                articles: result,
+                success: true,
             });
         } catch (error: unknown) {
             const err = error as { message: string };
@@ -192,20 +209,14 @@ export class UserController {
         }
     }
 
-
-
-
     async editArticle(req: any, res: Response): Promise<void> {
         try {
-  
-            const result = await editArticleService.execute(
-               req.body
-            );
+            const result = await editArticleService.execute(req.body);
 
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],
                 article: result,
-                success: true
+                success: true,
             });
         } catch (error: unknown) {
             const err = error as { message: string };
@@ -219,15 +230,14 @@ export class UserController {
 
     async deleteArticle(req: Request, res: Response): Promise<void> {
         try {
-
             const { articleId } = req.body;
 
-            const result = await deleteArticleService.execute(articleId); 
-            
+            const result = await deleteArticleService.execute(articleId);
+
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],
                 article: result,
-                success: true
+                success: true,
             });
         } catch (error: unknown) {
             const err = error as { message: string };

@@ -43,14 +43,22 @@ export class UserRepositoryMongoose implements UserRepository {
         email: string;
         password: string;
     }): Promise<any> {
- 
         
         const { email, password } = credentials;
-        const user = await UserModel.find({ email, password });
+        const user = await UserModel.findOne({ email, password }).lean<User>().exec(); 
+        if (!user) throw new Error("user not found"); 
 
-        if (!user) throw new Error("user not found");
-
-        return user;
+        if(user) {
+            return {
+                _id: user._id,
+                name: user.name,
+                email: user.email, 
+                profilePicture: user.profilePicture,
+                phone: user.phone,
+                dob: user.dob,
+                preferences: user.preferences
+            } as User
+        }
     }
 
     async createArticle(article: Article): Promise<any> {
