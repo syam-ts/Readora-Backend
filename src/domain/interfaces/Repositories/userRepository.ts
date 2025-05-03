@@ -39,6 +39,20 @@ export class UserRepositoryMongoose implements UserRepository {
         return savedUser.toObject();
     }
 
+    async addPreferences(userId: Id, preferences: string[]): Promise<any> {
+
+        const updateUser = await UserModel.findByIdAndUpdate(
+            userId,
+            { $set: { preferences } },  
+            { new: true }  
+        );
+
+        if(!updateUser) throw new Error('User not found');
+
+        return updateUser;
+ 
+    }
+
     async loginUser(credentials: {
         email: string;
         password: string;

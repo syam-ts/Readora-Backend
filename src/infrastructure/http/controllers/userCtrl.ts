@@ -6,6 +6,7 @@ import { ViewAllArtcles } from "../../../application/services/articles/viewAllAr
 import { MonoArticleView } from "../../../application/services/articles/monoArticleViewService";
 import { ViewUserProfile } from "../../../application/services/users/viewUserProfileService";
 import { ViewMyArtcles } from "../../../application/services/articles/viewMyArticlesService";
+import { AddPreferences } from "../../../application/services/users/addPreferencesService";
 import { EditProfile } from "../../../application/services/users/editProfileService";
 import { EditArticle } from "../../../application/services/articles/editArticleService";
 import { DeleteArticle } from "../../../application/services/articles/deleteArticleService";
@@ -23,6 +24,7 @@ const viewAllArtclesService = new ViewAllArtcles(new UserRepositoryMongoose());
 const monoArticleViewService = new MonoArticleView(new UserRepositoryMongoose());
 const viewUserProfileService = new ViewUserProfile(new UserRepositoryMongoose());
 const ViewMyArtclesService = new ViewMyArtcles(new UserRepositoryMongoose());
+const addPreferencesService = new AddPreferences(new UserRepositoryMongoose());
 const editProfileService = new EditProfile(new UserRepositoryMongoose());
 const editArticleService = new EditArticle(new UserRepositoryMongoose());
 const deleteArticleService = new DeleteArticle(new UserRepositoryMongoose());
@@ -279,6 +281,27 @@ export class UserController {
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],
                 article: result,
+                success: true,
+            });
+        } catch (error: unknown) {
+            const err = error as { message: string };
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message: err.message,
+                success: false,
+            });
+            return;
+        }
+    }
+
+    async addPreferences(req: Request, res: Response): Promise<void> {
+        try {
+            const { userId } = req.params;
+            const { preferences } = req.body;
+
+            const result = await addPreferencesService.execute(userId, preferences);
+
+            res.status(HttpStatusCode.CREATED).json({
+                message: StatusMessage[HttpStatusCode.OK], 
                 success: true,
             });
         } catch (error: unknown) {

@@ -17,6 +17,7 @@ userRouter.post('/login', userCtrl.loginUser);
 userRouter.post('/article/:userId',verifyToken, userCtrl.crateArticle); 
 userRouter.post('/refreshToken', authCtrl.refreshToken); 
 
+userRouter.put('/preferences/:userId', userCtrl.addPreferences);
 userRouter.put('/user/profile',verifyToken, userCtrl.editProfile);
 userRouter.put('/article',verifyToken, userCtrl.editArticle);
 userRouter.put('/like/:articleId',verifyToken, userCtrl.likeArticle);
