@@ -9,7 +9,8 @@ interface User {
 }
 
 export const profileError = (user: User) => {
-    const { name, profilePicture, phone, dob, preferences } = user;
+    const { name, profilePicture, phone, dob, preferences } = user.body;
+ 
 
     if (!name || !profilePicture || !phone || !dob || !preferences) {
         throw new Error("Some fileds are missing data");

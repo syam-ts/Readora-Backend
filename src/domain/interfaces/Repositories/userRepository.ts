@@ -1,6 +1,7 @@
 import { User, UserModel } from "../../entities/User";
 import { UserRepository } from "../../../application/services/users/userSignupService";
 import { ArticleModel } from "../../entities/Article";
+import bcrypt from 'bcrypt';
 
 type Id = string;
 
@@ -24,14 +25,20 @@ export class UserRepositoryMongoose implements UserRepository {
     }): Promise<any> {
         const { name, email, password } = credentials;
 
+        const salt: number = parseInt(process.env.BCRYPT_SALT as string, 10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
         const newUser = new UserModel({
             name,
             email,
-            password,
+            password: hashedPassword,
             profilePicture: "",
             phone: null,
+            gender: "not added yet",
             dob: null,
+            location: "",
             preferences: [],
+            noOfArticles: 0
         });
 
         const savedUser = await newUser.save();
@@ -39,7 +46,7 @@ export class UserRepositoryMongoose implements UserRepository {
         return savedUser.toObject();
     }
 
-    async addPreferences(userId: Id, preferences: string[]): Promise<any> {
+    async addPreferences(userId: Id, preferences: string[]): Promise<any> { 
 
         const updateUser = await UserModel.findByIdAndUpdate(
             userId,
@@ -57,12 +64,20 @@ export class UserRepositoryMongoose implements UserRepository {
         email: string;
         password: string;
     }): Promise<any> {
-        const { email, password } = credentials;
-        const user = await UserModel.findOne({ email, password })
+        const { email,  password } = credentials;
+        const user = await UserModel.findOne({ email })
             .lean<User>()
             .exec();
             console.log('the use', user)
         if (!user) throw new Error("user not found");
+
+        const userPassword = user.password; 
+        const isValidPassword = await bcrypt.compare(password, userPassword);
+
+        if (!isValidPassword) {
+            throw new Error("wrong password");
+          }  
+      
 
         if (user) {
             return {
@@ -110,7 +125,8 @@ export class UserRepositoryMongoose implements UserRepository {
 
         const articles = await ArticleModel.find({
             category: { $in: preferences },
-        });
+        }); 
+        
 
         if (!articles) throw new Error("no article found");
         return articles;
@@ -119,10 +135,9 @@ export class UserRepositoryMongoose implements UserRepository {
     async viewMyArticles(userId: Id): Promise<Article> {
         const myArticles = await ArticleModel.find({ userId: userId })
             .lean<Article>()
-            .exec();
-
-        if (!myArticles) throw new Error("no articles found");
-
+            .exec();  
+            
+        if (!myArticles) throw new Error("no articles found"); 
         return myArticles;
     }
 
@@ -148,15 +163,20 @@ export class UserRepositoryMongoose implements UserRepository {
         profilePicture: string;
         phone: number;
         dob: number;
+        gender: string;
+        location: string;
         preferences: string[];
     }): Promise<any> {
-        const { userId, name, profilePicture, phone, dob, preferences } = user;
-
+        const { userId, name, profilePicture, phone, dob,gender, location, preferences } = user.body;
+        console.log('the uer', typeof(dob))
+ 
         const editData = {
             name,
             profilePicture,
-            phone: Number(phone),
-            dob: dob,
+            phone: phone,
+            dob: Date.parse(dob),
+            gender,
+            location,
             preferences,
         };
 

@@ -28,14 +28,14 @@ export const articleError = (article: Article, modifyType: string): void => {
         id = _id;
     }
 
-    if (title.length < 10 || title.length > 40)
-        throw new Error("Title should be between 10 to 40 characters");
+    if (title.length < 10 || title.length > 80)
+        throw new Error("Title should be between 10 to 80 characters");
 
-    if (subtitle.length < 10 || subtitle.length > 20)
-        throw new Error("Subtitle should be between 10 to 20 characters");
+    if (subtitle.length < 10 || subtitle.length > 50)
+        throw new Error("Subtitle should be between 10 to 50 characters");
  
-    if (description.length < 80 || description.length > 250)
-        throw new Error("Description should be between 80 to 250 characters");
+    if (description.length < 80 || description.length > 450)
+        throw new Error("Description should be between 80 to 450 characters");
 
     if (!image) throw new Error("Image need to be provided");
 

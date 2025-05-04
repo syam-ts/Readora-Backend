@@ -36,6 +36,7 @@ export class UserController {
 
     async signupUser(req: any, res: Response): Promise<void> {
         try {
+            console.log('bo', req.body)
             const result = await userSignupService.execute(req.body);
 
             res
