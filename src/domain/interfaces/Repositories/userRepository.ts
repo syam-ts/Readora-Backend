@@ -43,7 +43,7 @@ export class UserRepositoryMongoose implements UserRepository {
 
         const savedUser = await newUser.save();
 
-        return savedUser.toObject();
+        return {userId: savedUser._id};
     }
 
     async addPreferences(userId: Id, preferences: string[]): Promise<any> { 
@@ -134,6 +134,7 @@ export class UserRepositoryMongoose implements UserRepository {
 
     async viewMyArticles(userId: Id): Promise<Article> {
         const myArticles = await ArticleModel.find({ userId: userId })
+            .sort({createdAt: -1})
             .lean<Article>()
             .exec();  
             
