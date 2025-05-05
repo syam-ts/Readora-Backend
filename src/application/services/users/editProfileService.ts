@@ -10,13 +10,13 @@ interface User {
 }
 
 export interface UserRepository {
-    editProfile(user: User): Promise<any>;
+    editProfile(user: User): Promise<User>;
 }
 
 export class EditProfile {
     constructor(private userRepository: UserRepository) { }
 
-    async execute(user: User): Promise<any> {
+    async execute(user: User): Promise<User> {
         
 
         profileError(user);

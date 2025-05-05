@@ -12,13 +12,13 @@ interface Article {
 }
 
 export interface UserRepository {
-    editArticle(article: Article): Promise<any>;
+    editArticle(article: Article): Promise<Article>;
 }
 
 export class EditArticle {
     constructor(private userRespository: UserRepository) { }
 
-    async execute(article: Article): Promise<any> {
+    async execute(article: Article): Promise<Article> {
 
      //validation using custom funciton  ------------->
         articleError(article, 'edit');

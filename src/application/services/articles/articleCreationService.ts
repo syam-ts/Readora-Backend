@@ -11,13 +11,13 @@ interface Article {
 }
 
 export interface UserRepository {
-    createArticle(finalArticle: Article): Promise<any>;
+    createArticle(finalArticle: Article): Promise<Article>;
 }
 
 export class CreateArticle {
     constructor(private userRepository: UserRepository) { }
 
-    async execute(userId: string, article: Article): Promise<any> {
+    async execute(userId: string, article: Article): Promise<Article> {
         const { title, subtitle, description, image, tags, category } = article;
 
         const finalArticle = {
