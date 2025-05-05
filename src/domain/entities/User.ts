@@ -7,7 +7,7 @@ export interface User extends Document {
     profilePicture: string;
     phone: number;
     gender: string;
-    dob: number;
+    dob: Date;
     location: string;
     preferences: string[];
     noOfArticles: number;
@@ -23,7 +23,7 @@ export const UserSchema: Schema = new Schema({
         type: String, requied: true,
         enum: ["male", "female", "not added yet"]
     },
-    dob: { type: Number, requied: true },
+    dob: { type: Date, requied: true },
     location: { type: String, requied: true },
     preferences: [{ type: String, requied: true }],
     noOfArticles: { type: Number, requied: false },

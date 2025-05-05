@@ -174,6 +174,7 @@ export class UserController {
 
     async editProfile(req: any, res: Response): Promise<void> {
         try {
+            console.log('begingin: ', req.body)
             const result = await editProfileService.execute(req.body);
 
             res.status(HttpStatusCode.CREATED).json({

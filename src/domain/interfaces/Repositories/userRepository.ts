@@ -1,7 +1,7 @@
 import { User, UserModel } from "../../entities/User";
 import { UserRepository } from "../../../application/services/users/userSignupService";
 import { ArticleModel } from "../../entities/Article";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
 type Id = string;
 
@@ -38,46 +38,41 @@ export class UserRepositoryMongoose implements UserRepository {
             dob: null,
             location: "",
             preferences: [],
-            noOfArticles: 0
+            noOfArticles: 0,
         });
 
         const savedUser = await newUser.save();
 
-        return {userId: savedUser._id};
+        return { userId: savedUser._id };
     }
 
-    async addPreferences(userId: Id, preferences: string[]): Promise<any> { 
-
+    async addPreferences(userId: Id, preferences: string[]): Promise<any> {
         const updateUser = await UserModel.findByIdAndUpdate(
             userId,
-            { $set: { preferences } },  
-            { new: true }  
+            { $set: { preferences } },
+            { new: true }
         );
 
-        if(!updateUser) throw new Error('User not found');
+        if (!updateUser) throw new Error("User not found");
 
         return updateUser;
- 
     }
 
     async loginUser(credentials: {
         email: string;
         password: string;
     }): Promise<any> {
-        const { email,  password } = credentials;
-        const user = await UserModel.findOne({ email })
-            .lean<User>()
-            .exec();
-            console.log('the use', user)
+        const { email, password } = credentials;
+        const user = await UserModel.findOne({ email }).lean<User>().exec();
+        console.log("the use", user);
         if (!user) throw new Error("user not found");
 
-        const userPassword = user.password; 
+        const userPassword = user.password;
         const isValidPassword = await bcrypt.compare(password, userPassword);
 
         if (!isValidPassword) {
             throw new Error("wrong password");
-          }  
-      
+        }
 
         if (user) {
             return {
@@ -125,8 +120,7 @@ export class UserRepositoryMongoose implements UserRepository {
 
         const articles = await ArticleModel.find({
             category: { $in: preferences },
-        }); 
-        
+        });
 
         if (!articles) throw new Error("no article found");
         return articles;
@@ -134,11 +128,11 @@ export class UserRepositoryMongoose implements UserRepository {
 
     async viewMyArticles(userId: Id): Promise<Article> {
         const myArticles = await ArticleModel.find({ userId: userId })
-            .sort({createdAt: -1})
+            .sort({ createdAt: -1 })
             .lean<Article>()
-            .exec();  
-            
-        if (!myArticles) throw new Error("no articles found"); 
+            .exec();
+
+        if (!myArticles) throw new Error("no articles found");
         return myArticles;
     }
 
@@ -168,14 +162,22 @@ export class UserRepositoryMongoose implements UserRepository {
         location: string;
         preferences: string[];
     }): Promise<any> {
-        const { userId, name, profilePicture, phone, dob,gender, location, preferences } = user.body;
-        console.log('the uer', typeof(dob))
- 
+        const {
+            userId,
+            name,
+            profilePicture,
+            phone,
+            dob,
+            gender,
+            location,
+            preferences,
+        } = user;
+
         const editData = {
             name,
             profilePicture,
             phone: phone,
-            dob: Date.parse(dob),
+            dob: new Date(dob).getTime(),
             gender,
             location,
             preferences,

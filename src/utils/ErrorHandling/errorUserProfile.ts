@@ -9,7 +9,7 @@ interface User {
 }
 
 export const profileError = (user: User) => {
-    const { name, profilePicture, phone, dob, preferences } = user.body;
+    const { name, profilePicture, phone, dob, preferences } = user;
  
 
     if (!name || !profilePicture || !phone || !dob || !preferences) {
@@ -24,9 +24,9 @@ export const profileError = (user: User) => {
         throw new Error("Phone Number should be 10 characters");
     }
 
-    if (String(dob).length < 10 || String(dob).length > 10) {
-        throw new Error("DOB need to be valid");
-    }
+    // if (String(dob).length < 10 || dob.length > 10) {
+    //     throw new Error("DOB need to be valid");
+    // }
 
     if (preferences.length < 3 || preferences.length > 5) {
         throw new Error("Preferences should be between 3 to 5");
