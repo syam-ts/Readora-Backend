@@ -112,7 +112,7 @@ export class UserRepositoryMongoose implements UserRepository {
         return savedArticle;
     }
 
-    async viewAllArticles(userId: Id): Promise<any> {
+    async viewAllArticles(userId: Id): Promise<Article> {
         const user = await UserModel.findById(userId);
         if (!user) throw new Error("User not found");
 
@@ -120,10 +120,11 @@ export class UserRepositoryMongoose implements UserRepository {
 
         const articles = await ArticleModel.find({
             category: { $in: preferences },
-        });
+        }).lean<Article>();
 
         if (!articles) throw new Error("no article found");
-        return articles;
+        
+        return articles as Article;
     }
 
     async viewMyArticles(userId: Id): Promise<Article> {
