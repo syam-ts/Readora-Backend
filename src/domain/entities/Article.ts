@@ -6,6 +6,7 @@ export interface Article extends Document {
     title: string;
     subtitle: string
     description: string;
+    status: string;
     image: string;
     tags: string[];
     category: string;
@@ -21,6 +22,11 @@ export const ArticleSchema: Schema = new Schema({
     title: { type: String, requied: true },
     subtitle: { type: String, requied: true },
     description: { type: String, requied: true },
+    status: {
+        type: String,
+        enum: ['unpublished', 'published', 'archived'],
+        required: true
+    },
     image: { type: String, requied: true },
     tags: [{ type: String, requied: true }],
     category: { type: String, requied: true },

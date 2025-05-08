@@ -10,7 +10,7 @@ const authCtrl = new AuthController();
 userRouter.get('/article/:articleId',verifyToken, userCtrl.monoArticleView);
 userRouter.get('/profile/:userId', verifyToken,userCtrl.viewUserProfile);
 userRouter.get('/articles/:userId',verifyToken, userCtrl.viewAllArticle);
-userRouter.get('/user/articles/:userId',verifyToken, userCtrl.viewMyArticles)
+userRouter.get('/user/articles/:articleType',verifyToken, userCtrl.viewMyArticles)
 
 userRouter.post("/signup", userCtrl.signupUser);
 userRouter.post('/login', userCtrl.loginUser);
@@ -20,6 +20,7 @@ userRouter.post('/refreshToken', authCtrl.refreshToken);
 userRouter.put('/preferences/:userId', userCtrl.addPreferences);
 userRouter.put('/user/profile',verifyToken, userCtrl.editProfile);
 userRouter.put('/article',verifyToken, userCtrl.editArticle);
+userRouter.put('/publishArticle/:articleId',verifyToken, userCtrl.publishArticle);
 userRouter.put('/like/:articleId',verifyToken, userCtrl.likeArticle);
 userRouter.put('/dislike/:articleId',verifyToken, userCtrl.dislikeArticle);
 

@@ -63,8 +63,7 @@ export class UserRepositoryMongoose implements UserRepository {
         password: string;
     }): Promise<any> {
         const { email, password } = credentials;
-        const user = await UserModel.findOne({ email }).lean<User>().exec();
-        console.log("the use", user);
+        const user = await UserModel.findOne({ email }).lean<User>().exec() 
         if (!user) throw new Error("user not found");
 
         const userPassword = user.password;
@@ -94,6 +93,7 @@ export class UserRepositoryMongoose implements UserRepository {
         const user = await UserModel.findById(userId).lean<User>();
 
         if (!user) throw new Error("user not found");
+        const status: string = 'unpublished';
 
         const newArticle = new ArticleModel({
             userId,
@@ -101,6 +101,7 @@ export class UserRepositoryMongoose implements UserRepository {
             subtitle,
             title,
             description,
+            status,
             image,
             tags,
             category,
@@ -127,14 +128,45 @@ export class UserRepositoryMongoose implements UserRepository {
         return articles as Article;
     }
 
-    async viewMyArticles(userId: Id): Promise<Article> {
-        const myArticles = await ArticleModel.find({ userId: userId })
+    async viewMyArticles(userId: Id, articleType: string): Promise<Article> {
+
+        const myArticles = await ArticleModel.find({ userId: userId, status: articleType })
             .sort({ createdAt: -1 })
             .lean<Article>()
             .exec();
 
         if (!myArticles) throw new Error("no articles found");
         return myArticles;
+    }
+
+    async publishArticle(articleId: string): Promise<Article> {
+          
+        const publishArticle = await ArticleModel.findByIdAndUpdate(articleId, {
+            status: "published"
+        }, {
+            new: true
+        }).lean<Article>();
+
+        console.log('final: ', publishArticle)
+
+        if(!publishArticle) throw new Error('Article not exists');
+
+        return publishArticle;
+    }
+
+    async archiveArticle(articleId: string): Promise<Article> {
+          
+        const archiveArticle = await ArticleModel.findByIdAndUpdate(articleId, {
+            status: "deleted"
+        }, {
+            new: true
+        }).lean<Article>();
+
+        console.log('final: ', archiveArticle)
+
+        if(!archiveArticle) throw new Error('Article not exists');
+
+        return archiveArticle;
     }
 
     async monoArticleView(articleId: Id): Promise<any> {

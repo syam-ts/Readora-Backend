@@ -4,6 +4,7 @@ import { UserLogin } from "../../../application/services/users/userLoginService"
 import { CreateArticle } from "../../../application/services/articles/articleCreationService";
 import { ViewAllArtcles } from "../../../application/services/articles/viewAllArticlesService";
 import { MonoArticleView } from "../../../application/services/articles/monoArticleViewService";
+import { PublishArticle } from "../../../application/services/articles/pushlishArticleService";
 import { ViewUserProfile } from "../../../application/services/users/viewUserProfileService";
 import { ViewMyArtcles } from "../../../application/services/articles/viewMyArticlesService";
 import { AddPreferences } from "../../../application/services/users/addPreferencesService";
@@ -22,6 +23,7 @@ const userLoginService = new UserLogin(new UserRepositoryMongoose());
 const createArticleService = new CreateArticle(new UserRepositoryMongoose());
 const viewAllArtclesService = new ViewAllArtcles(new UserRepositoryMongoose());
 const monoArticleViewService = new MonoArticleView(new UserRepositoryMongoose());
+const publishArticleService = new PublishArticle(new UserRepositoryMongoose());
 const viewUserProfileService = new ViewUserProfile(new UserRepositoryMongoose());
 const ViewMyArtclesService = new ViewMyArtcles(new UserRepositoryMongoose());
 const addPreferencesService = new AddPreferences(new UserRepositoryMongoose());
@@ -137,9 +139,29 @@ export class UserController {
             const { articleId } = req.params;
             const result = await monoArticleViewService.execute(articleId);
 
-            res.status(HttpStatusCode.CREATED).json({
+            res.status(HttpStatusCode.OK).json({
                 message: StatusMessage[HttpStatusCode.OK],
                 article: result,
+                success: true,
+            });
+        } catch (error: unknown) {
+            const err = error as { message: string };
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message: err.message,
+                success: false,
+            });
+            return;
+        }
+    }
+
+    async publishArticle(req: any, res: Response): Promise<void> {
+        try {
+            const { articleId } = req.params;
+            console.log('article id: ', articleId)
+            const result = await publishArticleService.execute(articleId);
+
+            res.status(HttpStatusCode.CREATED).json({
+                message: StatusMessage[HttpStatusCode.CREATED], 
                 success: true,
             });
         } catch (error: unknown) {
@@ -193,12 +215,17 @@ export class UserController {
     }
 
     async viewMyArticles(req: any, res: Response): Promise<void> {
-        try {
-            const { userId } = req.params;
+        try {  
+            if(!req.user || !req.user.id) {
+                res.status(401).json({message: 'Unauthorized', success: false});
+            }
+            const { articleType } = req.params;
 
-            const result = await ViewMyArtclesService.execute(userId);
+            const userId: string = req.user.id; 
 
-            res.status(HttpStatusCode.CREATED).json({
+            const result = await ViewMyArtclesService.execute(userId, articleType);
+
+            res.status(HttpStatusCode.OK).json({
                 message: StatusMessage[HttpStatusCode.OK],
                 articles: result,
                 success: true,
