@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { UserSignup } from "../../../application/services/users/userSignupService";
 import { UserLogin } from "../../../application/services/users/userLoginService";
+import { VerifyOtp } from "../../../application/services/users/userVerifyOtpService";
 import { CreateArticle } from "../../../application/services/articles/articleCreationService";
 import { ViewAllArtcles } from "../../../application/services/articles/viewAllArticlesService";
 import { MonoArticleView } from "../../../application/services/articles/monoArticleViewService";
-import { PublishArticle } from "../../../application/services/articles/pushlishArticleService";
+import { PublishArticle } from "../../../application/services/articles/publishArticleService";
+import { ArchiveArticle } from "../../../application/services/articles/archiveArticleService";
 import { ViewUserProfile } from "../../../application/services/users/viewUserProfileService";
 import { ViewMyArtcles } from "../../../application/services/articles/viewMyArticlesService";
 import { AddPreferences } from "../../../application/services/users/addPreferencesService";
@@ -20,11 +22,17 @@ import generateToken from "../../../utils/jwt/generateToken";
 
 const userSignupService = new UserSignup(new UserRepositoryMongoose());
 const userLoginService = new UserLogin(new UserRepositoryMongoose());
+const verifyOtpService = new VerifyOtp(new UserRepositoryMongoose());
 const createArticleService = new CreateArticle(new UserRepositoryMongoose());
 const viewAllArtclesService = new ViewAllArtcles(new UserRepositoryMongoose());
-const monoArticleViewService = new MonoArticleView(new UserRepositoryMongoose());
+const monoArticleViewService = new MonoArticleView(
+    new UserRepositoryMongoose()
+);
 const publishArticleService = new PublishArticle(new UserRepositoryMongoose());
-const viewUserProfileService = new ViewUserProfile(new UserRepositoryMongoose());
+const archiveArticleService = new ArchiveArticle(new UserRepositoryMongoose());
+const viewUserProfileService = new ViewUserProfile(
+    new UserRepositoryMongoose()
+);
 const ViewMyArtclesService = new ViewMyArtcles(new UserRepositoryMongoose());
 const addPreferencesService = new AddPreferences(new UserRepositoryMongoose());
 const editProfileService = new EditProfile(new UserRepositoryMongoose());
@@ -38,16 +46,14 @@ export class UserController {
 
     async signupUser(req: any, res: Response): Promise<void> {
         try {
-            console.log('bo', req.body)
+            console.log("bo", req.body);
             const result = await userSignupService.execute(req.body);
 
-            res
-                .status(HttpStatusCode.OK)
-                .json({
-                    message: StatusMessage[HttpStatusCode.OK],
-                    user: result,
-                    success: true,
-                });
+            res.status(HttpStatusCode.OK).json({
+                message: StatusMessage[HttpStatusCode.OK],
+                user: result,
+                success: true,
+            });
         } catch (error: unknown) {
             const err = error as { message: string };
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -60,10 +66,9 @@ export class UserController {
 
     async loginUser(req: any, res: Response): Promise<void> {
         try {
-
-            const user = await userLoginService.execute(req.body); 
+            const user = await userLoginService.execute(req.body);
             const { accessToken, refreshToken } = generateToken(user);
-            console.log('Refresh', refreshToken);
+            console.log("Refresh", refreshToken);
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
@@ -71,15 +76,32 @@ export class UserController {
                 sameSite: "none",
             });
 
-            res
-                .status(HttpStatusCode.OK)
-                .json({
-                    message: StatusMessage[HttpStatusCode.OK],
-                    user,
-                    accessToken,
-                    refreshToken,
-                    success: true,
-                });
+            res.status(HttpStatusCode.OK).json({
+                message: StatusMessage[HttpStatusCode.OK],
+                user,
+                accessToken,
+                refreshToken,
+                success: true,
+            });
+        } catch (error: unknown) {
+            const err = error as { message: string };
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message: err.message,
+                success: false,
+            });
+            return;
+        }
+    }
+
+    async verifyOtp(req: any, res: Response): Promise<void> {
+        try {
+            const user = await verifyOtpService.execute(req.body);
+
+            res.status(HttpStatusCode.OK).json({
+                message: StatusMessage[HttpStatusCode.OK],
+                user,
+                success: true,
+            });
         } catch (error: unknown) {
             const err = error as { message: string };
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -117,13 +139,11 @@ export class UserController {
 
             const result = await viewAllArtclesService.execute(userId);
 
-            res
-                .status(HttpStatusCode.CREATED)
-                .json({
-                    message: StatusMessage[HttpStatusCode.OK],
-                    articles: result,
-                    success: true,
-                });
+            res.status(HttpStatusCode.CREATED).json({
+                message: StatusMessage[HttpStatusCode.OK],
+                articles: result,
+                success: true,
+            });
         } catch (error: unknown) {
             const err = error as { message: string };
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -157,11 +177,29 @@ export class UserController {
     async publishArticle(req: any, res: Response): Promise<void> {
         try {
             const { articleId } = req.params;
-            console.log('article id: ', articleId)
             const result = await publishArticleService.execute(articleId);
 
             res.status(HttpStatusCode.CREATED).json({
-                message: StatusMessage[HttpStatusCode.CREATED], 
+                message: StatusMessage[HttpStatusCode.CREATED],
+                success: true,
+            });
+        } catch (error: unknown) {
+            const err = error as { message: string };
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message: err.message,
+                success: false,
+            });
+            return;
+        }
+    }
+
+    async archiveArticle(req: any, res: Response): Promise<void> {
+        try {
+            const { articleId } = req.params;
+            const result = await archiveArticleService.execute(articleId);
+
+            res.status(HttpStatusCode.CREATED).json({
+                message: StatusMessage[HttpStatusCode.CREATED],
                 success: true,
             });
         } catch (error: unknown) {
@@ -196,7 +234,7 @@ export class UserController {
 
     async editProfile(req: any, res: Response): Promise<void> {
         try {
-            console.log('begingin: ', req.body)
+            console.log("begingin: ", req.body);
             const result = await editProfileService.execute(req.body);
 
             res.status(HttpStatusCode.CREATED).json({
@@ -215,13 +253,13 @@ export class UserController {
     }
 
     async viewMyArticles(req: any, res: Response): Promise<void> {
-        try {  
-            if(!req.user || !req.user.id) {
-                res.status(401).json({message: 'Unauthorized', success: false});
+        try {
+            if (!req.user || !req.user.id) {
+                res.status(401).json({ message: "Unauthorized", success: false });
             }
             const { articleType } = req.params;
 
-            const userId: string = req.user.id; 
+            const userId: string = req.user.id;
 
             const result = await ViewMyArtclesService.execute(userId, articleType);
 
@@ -330,7 +368,7 @@ export class UserController {
             const result = await addPreferencesService.execute(userId, preferences);
 
             res.status(HttpStatusCode.CREATED).json({
-                message: StatusMessage[HttpStatusCode.OK], 
+                message: StatusMessage[HttpStatusCode.OK],
                 success: true,
             });
         } catch (error: unknown) {

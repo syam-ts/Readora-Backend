@@ -1,5 +1,7 @@
 interface Article {
-    userId: string;
+    _id?: string;
+    articleId?: string;
+    userId?: string;
     title: string;
     subtitle: string;
     description: string;
@@ -12,7 +14,7 @@ export interface UserRepository {
     archiveArticle(articleId: string): Promise<Article>;
 }
 
-export class archiveArticle {
+export class ArchiveArticle {
     constructor(private userRepository: UserRepository) { }
 
     async execute(articleId: string): Promise<Article> {

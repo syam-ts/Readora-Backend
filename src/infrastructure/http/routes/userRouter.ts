@@ -14,6 +14,7 @@ userRouter.get('/user/articles/:articleType',verifyToken, userCtrl.viewMyArticle
 
 userRouter.post("/signup", userCtrl.signupUser);
 userRouter.post('/login', userCtrl.loginUser);
+userRouter.post('/verifyOtp', userCtrl.loginUser);
 userRouter.post('/article/:userId',verifyToken, userCtrl.crateArticle); 
 userRouter.post('/refreshToken', authCtrl.refreshToken); 
 
@@ -21,6 +22,7 @@ userRouter.put('/preferences/:userId', userCtrl.addPreferences);
 userRouter.put('/user/profile',verifyToken, userCtrl.editProfile);
 userRouter.put('/article',verifyToken, userCtrl.editArticle);
 userRouter.put('/publishArticle/:articleId',verifyToken, userCtrl.publishArticle);
+userRouter.put('/archiveArticle/:articleId',verifyToken, userCtrl.archiveArticle);
 userRouter.put('/like/:articleId',verifyToken, userCtrl.likeArticle);
 userRouter.put('/dislike/:articleId',verifyToken, userCtrl.dislikeArticle);
 

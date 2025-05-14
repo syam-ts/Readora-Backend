@@ -63,7 +63,7 @@ export class UserRepositoryMongoose implements UserRepository {
         password: string;
     }): Promise<any> {
         const { email, password } = credentials;
-        const user = await UserModel.findOne({ email }).lean<User>().exec() 
+        const user = await UserModel.findOne({ email }).lean<User>().exec();
         if (!user) throw new Error("user not found");
 
         const userPassword = user.password;
@@ -86,6 +86,11 @@ export class UserRepositoryMongoose implements UserRepository {
         }
     }
 
+    async verifyOtp(originalOtp: number, enteredOtp: number): Promise<any> {
+ 
+ // cheks and return
+    }
+
     async createArticle(article: Article): Promise<any> {
         const { userId, title, subtitle, description, image, tags, category } =
             article;
@@ -93,7 +98,7 @@ export class UserRepositoryMongoose implements UserRepository {
         const user = await UserModel.findById(userId).lean<User>();
 
         if (!user) throw new Error("user not found");
-        const status: string = 'unpublished';
+        const status: string = "unpublished";
 
         const newArticle = new ArticleModel({
             userId,
@@ -124,13 +129,15 @@ export class UserRepositoryMongoose implements UserRepository {
         }).lean<Article>();
 
         if (!articles) throw new Error("no article found");
-        
+
         return articles as Article;
     }
 
     async viewMyArticles(userId: Id, articleType: string): Promise<Article> {
-
-        const myArticles = await ArticleModel.find({ userId: userId, status: articleType })
+        const myArticles = await ArticleModel.find({
+            userId: userId,
+            status: articleType,
+        })
             .sort({ createdAt: -1 })
             .lean<Article>()
             .exec();
@@ -140,31 +147,33 @@ export class UserRepositoryMongoose implements UserRepository {
     }
 
     async publishArticle(articleId: string): Promise<Article> {
-          
-        const publishArticle = await ArticleModel.findByIdAndUpdate(articleId, {
-            status: "published"
-        }, {
-            new: true
-        }).lean<Article>();
+        const publishArticle = await ArticleModel.findByIdAndUpdate(
+            articleId,
+            {
+                status: "published",
+            },
+            {
+                new: true,
+            }
+        ).lean<Article>();
 
-        console.log('final: ', publishArticle)
-
-        if(!publishArticle) throw new Error('Article not exists');
+        if (!publishArticle) throw new Error("Article not exists");
 
         return publishArticle;
     }
 
     async archiveArticle(articleId: string): Promise<Article> {
-          
-        const archiveArticle = await ArticleModel.findByIdAndUpdate(articleId, {
-            status: "deleted"
-        }, {
-            new: true
-        }).lean<Article>();
+        const archiveArticle = await ArticleModel.findByIdAndUpdate(
+            articleId,
+            {
+                status: "archived",
+            },
+            {
+                new: true,
+            }
+        ).lean<Article>();
 
-        console.log('final: ', archiveArticle)
-
-        if(!archiveArticle) throw new Error('Article not exists');
+        if (!archiveArticle) throw new Error("Article not exists");
 
         return archiveArticle;
     }
