@@ -46,12 +46,13 @@ export class UserRepositoryMongoose implements UserRepository {
         return { userId: savedUser._id };
     }
 
- 
+    async verifyOtp(generatedOtp: number, inputOtp: number): Promise<any> { 
+        if (generatedOtp !== inputOtp) {
+             throw new Error("Wrong OTP, Please send right OTP");
+        }
 
-        async verifyOtp(originalOtp: number, enteredOtp: number): Promise<any> {
- 
- // cheks and return
-      }
+        return true;
+    }
 
     async addPreferences(userId: Id, preferences: string[]): Promise<any> {
         const updateUser = await UserModel.findByIdAndUpdate(
@@ -92,8 +93,6 @@ export class UserRepositoryMongoose implements UserRepository {
             } as User;
         }
     }
-
-
 
     async createArticle(article: Article): Promise<any> {
         const { userId, title, subtitle, description, image, tags, category } =

@@ -14,7 +14,7 @@ userRouter.get('/user/articles/:articleType',verifyToken, userCtrl.viewMyArticle
 
 userRouter.post("/signup", userCtrl.signupUser);
 userRouter.post('/login', userCtrl.loginUser);
-userRouter.post('/verifyOtp', userCtrl.loginUser);
+userRouter.post('/verifyOtp', userCtrl.verifyOtp);
 userRouter.post('/article/:userId',verifyToken, userCtrl.crateArticle); 
 userRouter.post('/refreshToken', authCtrl.refreshToken); 
 
