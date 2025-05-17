@@ -20,7 +20,7 @@ import { HttpStatusCode } from "../../../helper/contants/enums";
 import { StatusMessage } from "../../../helper/contants/statusMessages";
 import generateToken from "../../../utils/jwt/generateToken";
 
-const userSignupService = new UserSignup(new UserRepositoryMongoose());
+const userSignupService = new UserSignup();
 const userLoginService = new UserLogin(new UserRepositoryMongoose());
 const verifyOtpService = new VerifyOtp(new UserRepositoryMongoose());
 const createArticleService = new CreateArticle(new UserRepositoryMongoose());
@@ -45,13 +45,16 @@ export class UserController {
     constructor() { }
 
     async signupUser(req: any, res: Response): Promise<void> {
-        try {
-            console.log("bo", req.body);
-            const result = await userSignupService.execute(req.body);
+        try { 
+            const generatedOtp = await userSignupService.execute(req.body); 
+            const data = {
+                body: req.body,
+                generatedOtp: generatedOtp
+            } 
 
             res.status(HttpStatusCode.OK).json({
                 message: StatusMessage[HttpStatusCode.OK],
-                user: result,
+                user: data,
                 success: true,
             });
         } catch (error: unknown) {

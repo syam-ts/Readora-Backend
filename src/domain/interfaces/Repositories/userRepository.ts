@@ -1,5 +1,5 @@
 import { User, UserModel } from "../../entities/User";
-import { UserRepository } from "../../../application/services/users/userSignupService";
+import { UserRepository } from "../../../application/services/users/userLoginService";
 import { ArticleModel } from "../../entities/Article";
 import bcrypt from "bcrypt";
 
@@ -46,6 +46,13 @@ export class UserRepositoryMongoose implements UserRepository {
         return { userId: savedUser._id };
     }
 
+ 
+
+        async verifyOtp(originalOtp: number, enteredOtp: number): Promise<any> {
+ 
+ // cheks and return
+      }
+
     async addPreferences(userId: Id, preferences: string[]): Promise<any> {
         const updateUser = await UserModel.findByIdAndUpdate(
             userId,
@@ -86,10 +93,7 @@ export class UserRepositoryMongoose implements UserRepository {
         }
     }
 
-    async verifyOtp(originalOtp: number, enteredOtp: number): Promise<any> {
- 
- // cheks and return
-    }
+
 
     async createArticle(article: Article): Promise<any> {
         const { userId, title, subtitle, description, image, tags, category } =

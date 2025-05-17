@@ -1,32 +1,20 @@
 import { signupError } from "../../../utils/ErrorHandling/errorSignup";
+import { sendMail } from "../../../utils/mail-otp/sendMail";
 
-interface User {
-    _id: string;
+interface Credentials {
     name: string;
     email: string;
     password: string;
-    dob: number;
-}
-
-interface Credentials {
-    name: string
-    email: string
-    password: string
-}
-
-
-export interface UserRepository {
-    createUser(credentials: Credentials): Promise<User>;
 }
 
 export class UserSignup {
-    constructor(private userRepository: UserRepository) { };
+    constructor() { }
 
-    async execute(credentials: Credentials): Promise<User> {
+    async execute(credentials: Credentials): Promise<number> {
+        signupError(credentials);
 
-        signupError(credentials)
-        return await this.userRepository.createUser(credentials);
-
+        // generate otp
+        const otp = await sendMail(credentials.email);
+        return otp as number;
     }
-
 }
