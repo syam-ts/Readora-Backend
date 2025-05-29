@@ -1,14 +1,11 @@
 import { User } from "../../../domain/entities/User";
+import { ArticleInterface } from "../../../domain/interfaces/Repositories/articleRepository";
 
-
-export interface UserRepository {
-    likeArticle(articleId: string): Promise<User>;
-}
-
+ 
 export class LikeArticle {
-    constructor(private userRepository: UserRepository) { }
+    constructor(private articleInterface: ArticleInterface) { }
 
     async execute(articleId: string): Promise<User> {
-        return this.userRepository.likeArticle(articleId);
+        return this.articleInterface.likeArticle(articleId);
     }
 }

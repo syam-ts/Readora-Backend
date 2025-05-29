@@ -1,6 +1,7 @@
 import { signupError } from "../../../utils/ErrorHandling/errorSignup";
 import { sendMail } from "../../../utils/mail-otp/sendMail";
 
+
 interface Credentials {
     name: string;
     email: string;

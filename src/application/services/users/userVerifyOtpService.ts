@@ -1,22 +1,14 @@
-interface Credentials {
-    name: string;
-    email: string;
-    password: string;
-}
-
-export interface UserRepository {
-    verifyOtp(originalOtp: number, enteredOtp: number): Promise<any>;
-    createUser(credentials: Credentials): Promise<any>;
-}
+import { UserInterface } from "../../../domain/interfaces/Repositories/userRepository";
 
 export class VerifyOtp {
-    constructor(private userRepository: UserRepository) { }
+    constructor(private userInterface: UserInterface) { }
 
     async execute(body: any): Promise<any> {
-        const { generatedOtp, inputOtp } = body.body;
-        const result = await this.userRepository.verifyOtp(generatedOtp, inputOtp);
+        const data = body.body;
+        const result = await this.userInterface.verifyOtp(data);
         if (result) {
-            return this.userRepository.createUser(body.body.data);
+            const credentials = body.body.data.credentials;
+            return this.userInterface.createUser(credentials);
         } else {
             throw new Error(result);
         }

@@ -1,14 +1,10 @@
 import { User } from "../../../domain/entities/User";
-
-
-export interface UserRepository {
-    addPreferences(userId: string, preferences: string[]): Promise<User>;
-};
-
+import { UserInterface } from "../../../domain/interfaces/Repositories/userRepository";
+ 
 export class AddPreferences {
-    constructor(private userRespository: UserRepository) { }
+    constructor(private userInterface: UserInterface) { }
 
     async execute(userId: string, preferences: string[]): Promise<User> {
-        return this.userRespository.addPreferences(userId, preferences); 
+        return this.userInterface.addPreferences(userId, preferences);
     }
-};
+}

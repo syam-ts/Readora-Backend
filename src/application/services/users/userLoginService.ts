@@ -1,4 +1,5 @@
 import { loginError } from "../../../utils/ErrorHandling/errorLogin";
+import { UserInterface } from "../../../domain/interfaces/Repositories/userRepository";
 
 interface User {
     _id: string;
@@ -6,27 +7,21 @@ interface User {
     email: string;
     password: string;
     dob: number;
-};
+}
 
 interface Credentials {
-    email: string
-    password: string
+    email: string;
+    password: string;
 }
-
-
-export interface UserRepository {
-    loginUser(credentials: Credentials): Promise<User>;
-}
+ 
 
 export class UserLogin {
-    constructor(private userRepository: UserRepository ) {};
+    constructor(private userInterface: UserInterface) { }
 
     async execute(credentials: Credentials): Promise<User> {
         // validation
         loginError(credentials);
 
-        return await this.userRepository.loginUser(credentials);
-
+        return await this.userInterface.loginUser(credentials);
     }
-
 }

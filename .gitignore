@@ -1,6 +1,6 @@
 #all modules
 node_modules
-
+dist
 
 #environment folder
 .env

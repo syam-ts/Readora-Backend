@@ -15,7 +15,8 @@ import { EditArticle } from "../../../application/services/articles/editArticleS
 import { DeleteArticle } from "../../../application/services/articles/deleteArticleService";
 import { LikeArticle } from "../../../application/services/likes/likeArticle";
 import { DislikeArticle } from "../../../application/services/likes/dislikeArticle";
-import { UserRepositoryMongoose } from "../../../domain/interfaces/Repositories/userRepository";
+import { UserRepositoryMongoose } from "../../../infrastructure/Repository-DB/userRepositoryMongo";
+import { ArticleRepositoryMongoose } from "../../../infrastructure/Repository-DB/articleRepository";
 import { HttpStatusCode } from "../../../helper/contants/enums";
 import { StatusMessage } from "../../../helper/contants/statusMessages";
 import generateToken from "../../../utils/jwt/generateToken";
@@ -23,23 +24,23 @@ import generateToken from "../../../utils/jwt/generateToken";
 const userSignupService = new UserSignup();
 const userLoginService = new UserLogin(new UserRepositoryMongoose());
 const verifyOtpService = new VerifyOtp(new UserRepositoryMongoose());
-const createArticleService = new CreateArticle(new UserRepositoryMongoose());
-const viewAllArtclesService = new ViewAllArtcles(new UserRepositoryMongoose());
+const addPreferencesService = new AddPreferences(new UserRepositoryMongoose());
+const editProfileService = new EditProfile(new UserRepositoryMongoose());
+const createArticleService = new CreateArticle(new ArticleRepositoryMongoose());
+const viewAllArtclesService = new ViewAllArtcles(new ArticleRepositoryMongoose());
 const monoArticleViewService = new MonoArticleView(
-    new UserRepositoryMongoose()
+    new ArticleRepositoryMongoose()
 );
-const publishArticleService = new PublishArticle(new UserRepositoryMongoose());
-const archiveArticleService = new ArchiveArticle(new UserRepositoryMongoose());
+const publishArticleService = new PublishArticle(new ArticleRepositoryMongoose());
+const archiveArticleService = new ArchiveArticle(new ArticleRepositoryMongoose());
 const viewUserProfileService = new ViewUserProfile(
     new UserRepositoryMongoose()
 );
-const ViewMyArtclesService = new ViewMyArtcles(new UserRepositoryMongoose());
-const addPreferencesService = new AddPreferences(new UserRepositoryMongoose());
-const editProfileService = new EditProfile(new UserRepositoryMongoose());
-const editArticleService = new EditArticle(new UserRepositoryMongoose());
-const deleteArticleService = new DeleteArticle(new UserRepositoryMongoose());
-const likeArticleService = new LikeArticle(new UserRepositoryMongoose());
-const dislikeArticleService = new DislikeArticle(new UserRepositoryMongoose());
+const ViewMyArtclesService = new ViewMyArtcles(new ArticleRepositoryMongoose());
+const editArticleService = new EditArticle(new ArticleRepositoryMongoose());
+const deleteArticleService = new DeleteArticle(new ArticleRepositoryMongoose());
+const likeArticleService = new LikeArticle(new ArticleRepositoryMongoose());
+const dislikeArticleService = new DislikeArticle(new ArticleRepositoryMongoose());
 
 export class UserController {
     constructor() { }

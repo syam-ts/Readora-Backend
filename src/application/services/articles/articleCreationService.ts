@@ -1,4 +1,5 @@
 import { articleError } from "../../../utils/ErrorHandling/errorArticle";
+import { ArticleInterface } from "../../../domain/interfaces/Repositories/articleRepository";
 
 interface Article {
     userId: string;
@@ -9,13 +10,9 @@ interface Article {
     tags: string[];
     category: string;
 }
-
-export interface UserRepository {
-    createArticle(finalArticle: Article): Promise<Article>;
-}
-
+ 
 export class CreateArticle {
-    constructor(private userRepository: UserRepository) { }
+    constructor(private articleInterface: ArticleInterface) { }
 
     async execute(userId: string, article: Article): Promise<Article> {
         const { title, subtitle, description, image, tags, category } = article;
@@ -33,6 +30,6 @@ export class CreateArticle {
           //validation using custom funciton  ------------->
         articleError(finalArticle, "create");
 
-        return this.userRepository.createArticle(finalArticle);
+        return this.articleInterface.createArticle(finalArticle);
     }
 }

@@ -1,4 +1,5 @@
 import { articleError } from "../../../utils/ErrorHandling/errorArticle";
+import { ArticleInterface } from "../../../domain/interfaces/Repositories/articleRepository";
 
 interface Article {
     _id?: string;
@@ -11,18 +12,14 @@ interface Article {
     category: string;
 }
 
-export interface UserRepository {
-    editArticle(article: Article): Promise<Article>;
-}
-
 export class EditArticle {
-    constructor(private userRespository: UserRepository) { }
+    constructor(private articleInterface: ArticleInterface) { }
 
     async execute(article: Article): Promise<Article> {
 
      //validation using custom funciton  ------------->
         articleError(article, 'edit');
 
-        return this.userRespository.editArticle(article);
+        return this.articleInterface.editArticle(article);
     }
 }

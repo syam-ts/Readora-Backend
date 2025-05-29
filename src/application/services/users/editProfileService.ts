@@ -1,4 +1,6 @@
 import { profileError } from "../../../utils/ErrorHandling/errorUserProfile";
+import { UserInterface } from "../../../domain/interfaces/Repositories/userRepository";
+
 
 interface User {
     userId: string;
@@ -8,18 +10,14 @@ interface User {
     dob: number;
     preferences: string[];
 }
-
-export interface UserRepository {
-    editProfile(user: User): Promise<User>;
-}
-
+ 
 export class EditProfile {
-    constructor(private userRepository: UserRepository) { }
+    constructor(private userInterface: UserInterface) { }
 
     async execute(user: User): Promise<User> {
         
 
         profileError(user);
-        return await this.userRepository.editProfile(user);
+        return await this.userInterface.editProfile(user);
     }
 }

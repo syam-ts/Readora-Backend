@@ -1,17 +1,12 @@
 import { User } from "../../../domain/entities/User";
-
-
-export interface UserRepository {
-    viewUserProfile(userId: string): Promise<User>
-};
-
-
+import { UserInterface } from "../../../domain/interfaces/Repositories/userRepository";
+ 
 export class ViewUserProfile {
-    constructor(private userRespository: UserRepository) {}
+    constructor(private userInterface: UserInterface) { }
 
     async execute(userId: string): Promise<User> {
-         const result = this.userRespository.viewUserProfile(userId);
+        const result = this.userInterface.viewUserProfile(userId);
 
-         return result;
+        return result;
     }
 }

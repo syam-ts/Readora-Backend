@@ -1,15 +1,12 @@
 import { Article } from "../../../domain/entities/Article";
-
-
-export interface UserRepository {
-    monoArticleView(articleId: string): Promise<Article>;
-}
+import { ArticleInterface } from "../../../domain/interfaces/Repositories/articleRepository";
+ 
 
 export class MonoArticleView {
-    constructor(private userRespository: UserRepository) { }
+    constructor(private articleInterface: ArticleInterface) { }
 
     async execute(articleId: string): Promise<Article> {
-        return this.userRespository.monoArticleView(articleId); 
+        return this.articleInterface.monoArticleView(articleId); 
  
     }
 }
