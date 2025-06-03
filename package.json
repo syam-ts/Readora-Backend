@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "npx nodemon --exec ts-node --transpile-only src/app.ts",
     "build": "tsc",
-    "start": "cross-env node src/dist/app.js"
+    "start": "cross-env node dist/app.js"
   },
   "dependencies": {
     "@types/cookie-parser": "^1.4.8",
