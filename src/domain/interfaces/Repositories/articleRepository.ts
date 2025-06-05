@@ -12,4 +12,5 @@ export interface ArticleInterface {
     deleteArticle(articleId: string): Promise<any>;
     likeArticle(articleId: string): Promise<any>;
     dislikeArticle(articleId: string): Promise<any>;
+    searchArticles(input: string): Promise<Article[]>;
 }

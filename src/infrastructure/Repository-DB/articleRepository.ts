@@ -1,11 +1,9 @@
 import { Article, ArticleModel } from "../../domain/entities/Article";
 import { User, UserModel } from "../../domain/entities/User";
-import { ArticleInterface } from "../../domain/interfaces/Repositories/articleRepository"
+import { ArticleInterface } from "../../domain/interfaces/Repositories/articleRepository";
 
 export class ArticleRepositoryMongoose implements ArticleInterface {
-
-
-   async createArticle(article: any): Promise<any> {
+    async createArticle(article: any): Promise<any> {
         const { userId, title, subtitle, description, image, tags, category } =
             article;
 
@@ -100,8 +98,6 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
         return article;
     }
 
-  
-
     async editArticle(article: Article): Promise<any> {
         const { _id, title, subtitle, description, image, tags, category } =
             article;
@@ -169,5 +165,13 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
 
         return dislikeArticle;
     }
-}
 
+    async searchArticles(input: string): Promise<Article[]> {
+        const articles = await ArticleModel.find({
+            title: { $regex: input, $options: "i" },
+        }).lean<Article[]>();
+        if (!articles) throw new Error("no article found");
+        
+        return articles;
+    }
+}

@@ -7,7 +7,7 @@ dotenv.config({
   });
 import cors from 'cors';
 import { connectDB } from "./infrastructure/database/db";
-import userRouter from './infrastructure/http/routes/userRouter'
+import indexRouter from './infrastructure/http/routes/index';
 import cookieparser from 'cookie-parser';
  
 
@@ -21,11 +21,11 @@ app.use(
         credentials: true
     })
 )
-app.use('/', userRouter);
-
+app.use('/', indexRouter);
 const server = http.createServer(app);
 
 const PORT = process.env.PORT;
+
 
 (async () => {
     await connectDB();

@@ -1,31 +1,29 @@
-import express from "express";
+import { Router } from "express";
 import { UserController } from "../controllers/userCtrl";
 import { AuthController } from "../controllers/authCtrl";
 import { verifyToken } from "../../../utils/middleware/verifyToken";
-const userRouter = express.Router();
 
-const userCtrl = new UserController();
-const authCtrl = new AuthController();
+const userRouter = Router();
+const userController = new UserController();
+const authController = new AuthController();
 
-userRouter.get('/article/:articleId',verifyToken, userCtrl.monoArticleView);
-userRouter.get('/profile/:userId', verifyToken,userCtrl.viewUserProfile);
-userRouter.get('/articles/:userId',verifyToken, userCtrl.viewAllArticle);
-userRouter.get('/user/articles/:articleType',verifyToken, userCtrl.viewMyArticles)
+const {
+    viewUserProfile,
+    signupUser,
+    loginUser,
+    verifyOtp,
+    addPreferences,
+    editProfile,
+} = userController;
+const { refreshToken } = authController;
 
-userRouter.post("/signup", userCtrl.signupUser);
-userRouter.post('/login', userCtrl.loginUser);
-userRouter.post('/verifyOtp', userCtrl.verifyOtp);
-userRouter.post('/article/:userId',verifyToken, userCtrl.crateArticle); 
-userRouter.post('/refreshToken', authCtrl.refreshToken); 
+userRouter.get("/profile/:userId", verifyToken, viewUserProfile);
 
-userRouter.put('/preferences/:userId', userCtrl.addPreferences);
-userRouter.put('/user/profile',verifyToken, userCtrl.editProfile);
-userRouter.put('/article',verifyToken, userCtrl.editArticle);
-userRouter.put('/publishArticle/:articleId',verifyToken, userCtrl.publishArticle);
-userRouter.put('/archiveArticle/:articleId',verifyToken, userCtrl.archiveArticle);
-userRouter.put('/like/:articleId',verifyToken, userCtrl.likeArticle);
-userRouter.put('/dislike/:articleId',verifyToken, userCtrl.dislikeArticle);
-
-userRouter.delete('/article',verifyToken, userCtrl.deleteArticle) 
+userRouter.post("/signup", signupUser);
+userRouter.post("/login", loginUser);
+userRouter.post("/verifyOtp", verifyOtp);
+userRouter.post("/refreshToken", refreshToken);
+userRouter.put("/preferences/:userId", addPreferences);
+userRouter.put("/user/profile", verifyToken, editProfile);
 
 export default userRouter;
