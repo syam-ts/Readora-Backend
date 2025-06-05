@@ -46,14 +46,14 @@ export class UserController {
     async loginUser(req: any, res: Response): Promise<void> {
         try {
             const user = await userLoginService.execute(req.body);
-            const { accessToken, refreshToken } = generateToken(user);
-            console.log("Refresh", refreshToken);
+            const { accessToken, refreshToken } = generateToken(user); 
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
             });
+          
 
             res.status(HttpStatusCode.OK).json({
                 message: StatusMessage[HttpStatusCode.OK],
