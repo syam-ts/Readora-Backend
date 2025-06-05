@@ -3,7 +3,7 @@ import { Article } from "../../entities/Article";
 export interface ArticleInterface {
 
     createArticle(article: any): Promise<Article>;
-    viewAllArticles(userId: string): Promise<Article>;
+    viewAllArticles(userId: string, loadMoreIndex: number): Promise<Article>;
     viewMyArticles(userId: string, articleType: string): Promise<Article>;
     publishArticle(articleId: string): Promise<any>;
     archiveArticle(articleId: string): Promise<Article>;

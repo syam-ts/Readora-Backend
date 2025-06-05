@@ -20,12 +20,12 @@ const {
 } = articleController;
 
 
-articleRouter.get("/viewAll/", verifyToken, viewAllArticle);
+articleRouter.get("/viewAll", verifyToken, viewAllArticle);
 articleRouter.get("/view/:articleId", verifyToken, monoArticleView);
 articleRouter.get("/viewMy/:articleType", verifyToken, viewMyArticles);
 
 articleRouter.post("/create", verifyToken, crateArticle);
-articleRouter.post("/search", verifyToken, searchArticles);
+articleRouter.post("/search/:input", verifyToken, searchArticles);
 articleRouter.put("/edit", verifyToken, editArticle);
 articleRouter.put("/publish/:articleId", verifyToken, publishArticle);
 articleRouter.put("/archive/:articleId", verifyToken, archiveArticle);

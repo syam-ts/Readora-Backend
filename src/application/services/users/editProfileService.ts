@@ -14,8 +14,7 @@ export class EditProfile {
     constructor(private userInterface: UserInterface) { }
 
     async execute(user: User, userId: string): Promise<User> {
-        
-
+          
         profileError(user);
         return await this.userInterface.editProfile(user, userId);
     }

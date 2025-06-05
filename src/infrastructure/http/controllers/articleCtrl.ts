@@ -58,9 +58,10 @@ export class ArticleController {
             if (!req.user || !req.user.id) {
                 res.status(401).json({ message: "Unauthorized", success: false });
             }
-            const userId = String(req.user?.id);
+            const userId = String(req.user?.id); 
+            const { loadMoreIndex} = req.query; 
 
-            const result = await viewAllArtclesService.execute(userId);
+            const result = await viewAllArtclesService.execute(userId, loadMoreIndex);
 
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],

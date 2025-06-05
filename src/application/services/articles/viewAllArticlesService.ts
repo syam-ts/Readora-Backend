@@ -5,8 +5,8 @@ import { ArticleInterface } from "../../../domain/interfaces/Repositories/articl
 export class ViewAllArtcles {
     constructor(private articleInterface: ArticleInterface) {}
 
-    async execute(userId: string): Promise<Article> {
-         const result = this.articleInterface.viewAllArticles(userId);
+    async execute(userId: string, loadMoreIndex: number): Promise<Article> {
+         const result = this.articleInterface.viewAllArticles(userId, loadMoreIndex);
 
          return result;
     }

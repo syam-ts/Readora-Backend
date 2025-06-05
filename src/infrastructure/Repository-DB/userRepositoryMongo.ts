@@ -99,8 +99,7 @@ export class UserRepositoryMongoose implements UserInterface {
          return user;
      }
  
-     async editProfile(user: {
-         userId: string;
+     async editProfile(user: { 
          name: string;
          profilePicture: string;
          phone: number;
@@ -108,9 +107,8 @@ export class UserRepositoryMongoose implements UserInterface {
          gender: string;
          location: string;
          preferences: string[];
-     }): Promise<any> {
-         const {
-             userId,
+     }, userId: string): Promise<any> {
+         const { 
              name,
              profilePicture,
              phone,
@@ -128,7 +126,7 @@ export class UserRepositoryMongoose implements UserInterface {
              gender,
              location,
              preferences,
-         };
+         }; 
  
          const editProfile = await UserModel.findByIdAndUpdate(
              userId,
@@ -138,7 +136,7 @@ export class UserRepositoryMongoose implements UserInterface {
              {
                  new: true,
              }
-         );
+         ); 
  
          if (!editProfile) throw new Error("user not found");
  

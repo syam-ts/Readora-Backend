@@ -30,15 +30,17 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
         return savedArticle;
     }
 
-    async viewAllArticles(userId: string): Promise<Article> {
+    async viewAllArticles(userId: string, loadMoreIndex: number): Promise<Article> {
         const user = await UserModel.findById(userId);
         if (!user) throw new Error("User not found");
-
+        
+        // vertical pagination
+        const pageSize: number = 9 * loadMoreIndex;
         const preferences = user.preferences;
 
         const articles = await ArticleModel.find({
             category: { $in: preferences },
-        }).sort({createdAt: -1}).lean<Article>();
+        }).sort({createdAt: -1}).limit(pageSize).lean<Article>();
 
         if (!articles) throw new Error("no article found");
 
