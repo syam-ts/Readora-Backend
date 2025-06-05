@@ -3,7 +3,6 @@ import { UserInterface } from "../../../domain/interfaces/Repositories/userRepos
 
 
 interface User {
-    userId: string;
     name: string;
     profilePicture: string;
     phone: number;
@@ -14,10 +13,10 @@ interface User {
 export class EditProfile {
     constructor(private userInterface: UserInterface) { }
 
-    async execute(user: User): Promise<User> {
+    async execute(user: User, userId: string): Promise<User> {
         
 
         profileError(user);
-        return await this.userInterface.editProfile(user);
+        return await this.userInterface.editProfile(user, userId);
     }
 }

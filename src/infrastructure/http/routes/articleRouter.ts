@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ArticleController } from "../controllers/articleCtrl";
-import { verifyToken } from "../../../utils/middleware/verifyToken";
+import { verifyToken } from "../../../utils/middleware/verifyToken"; 
 
 const articleRouter = Router();
 const articleController = new ArticleController();
@@ -16,14 +16,16 @@ const {
     likeArticle,
     dislikeArticle,
     deleteArticle,
+    searchArticles
 } = articleController;
 
 
-articleRouter.get("/view/:articleId", verifyToken, monoArticleView);
 articleRouter.get("/viewAll/", verifyToken, viewAllArticle);
+articleRouter.get("/view/:articleId", verifyToken, monoArticleView);
 articleRouter.get("/viewMy/:articleType", verifyToken, viewMyArticles);
 
 articleRouter.post("/create", verifyToken, crateArticle);
+articleRouter.post("/search", verifyToken, searchArticles);
 articleRouter.put("/edit", verifyToken, editArticle);
 articleRouter.put("/publish/:articleId", verifyToken, publishArticle);
 articleRouter.put("/archive/:articleId", verifyToken, archiveArticle);

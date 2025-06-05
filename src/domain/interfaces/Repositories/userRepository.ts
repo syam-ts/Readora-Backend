@@ -6,5 +6,5 @@ export interface UserInterface {
     addPreferences(userId: string, preferences: string[]): Promise<any>;
     loginUser(credentials: any): Promise<any>;
     viewUserProfile(userId: string): Promise<any>;
-    editProfile(user: any): Promise<any>;
+    editProfile(user: any, userId: string): Promise<any>;
 }

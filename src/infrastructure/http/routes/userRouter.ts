@@ -17,13 +17,13 @@ const {
 } = userController;
 const { refreshToken } = authController;
 
-userRouter.get("/profile/:userId", verifyToken, viewUserProfile);
+userRouter.get("/profile", verifyToken, viewUserProfile);
 
 userRouter.post("/signup", signupUser);
 userRouter.post("/login", loginUser);
 userRouter.post("/verifyOtp", verifyOtp);
 userRouter.post("/refreshToken", refreshToken);
 userRouter.put("/preferences/:userId", addPreferences);
-userRouter.put("/user/profile", verifyToken, editProfile);
+userRouter.put("/profile", verifyToken, editProfile);
 
 export default userRouter;

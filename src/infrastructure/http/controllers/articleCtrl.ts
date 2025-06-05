@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { HttpStatusCode } from "../../../helper/contants/enums";
+import { StatusMessage } from "../../../helper/contants/statusMessages";
 import { CreateArticle } from "../../../application/services/articles/articleCreationService";
 import { ViewAllArtcles } from "../../../application/services/articles/viewAllArticlesService";
 import { MonoArticleView } from "../../../application/services/articles/monoArticleViewService";
@@ -11,29 +13,28 @@ import { LikeArticle } from "../../../application/services/likes/likeArticle";
 import { DislikeArticle } from "../../../application/services/likes/dislikeArticle";
 import { SearchArticles } from "../../../application/services/articles/searchArticlesService";
 import { ArticleRepositoryMongoose } from "../../../infrastructure/Repository-DB/articleRepository";
-import { HttpStatusCode } from "../../../helper/contants/enums";
-import { StatusMessage } from "../../../helper/contants/statusMessages";
-
 
 const createArticleService = new CreateArticle(new ArticleRepositoryMongoose());
-const viewAllArtclesService = new ViewAllArtcles( new ArticleRepositoryMongoose());
-const monoArticleViewService = new MonoArticleView( new ArticleRepositoryMongoose());
-const publishArticleService = new PublishArticle( new ArticleRepositoryMongoose());
-const archiveArticleService = new ArchiveArticle( new ArticleRepositoryMongoose());
+const viewAllArtclesService = new ViewAllArtcles(new ArticleRepositoryMongoose());
+const monoArticleViewService = new MonoArticleView(new ArticleRepositoryMongoose());
+const publishArticleService = new PublishArticle(new ArticleRepositoryMongoose());
+const archiveArticleService = new ArchiveArticle(new ArticleRepositoryMongoose());
 const ViewMyArtclesService = new ViewMyArtcles(new ArticleRepositoryMongoose());
 const editArticleService = new EditArticle(new ArticleRepositoryMongoose());
 const deleteArticleService = new DeleteArticle(new ArticleRepositoryMongoose());
 const likeArticleService = new LikeArticle(new ArticleRepositoryMongoose());
-const dislikeArticleService = new DislikeArticle( new ArticleRepositoryMongoose());
-const searchArticlesService = new SearchArticles( new ArticleRepositoryMongoose());
-
+const dislikeArticleService = new DislikeArticle(new ArticleRepositoryMongoose());
+const searchArticlesService = new SearchArticles(new ArticleRepositoryMongoose());
 
 export class ArticleController {
-    constructor() {}
+    constructor() { }
 
     async crateArticle(req: any, res: Response): Promise<void> {
         try {
-            const { userId } = req.params;
+            if (!req.user || !req.user.id) {
+                res.status(401).json({ message: "Unauthorized", success: false });
+            }
+            const userId = String(req.user?.id);
 
             const result = await createArticleService.execute(userId, req.body);
 
@@ -54,7 +55,10 @@ export class ArticleController {
 
     async viewAllArticle(req: any, res: Response): Promise<void> {
         try {
-            const { userId } = req.params;
+            if (!req.user || !req.user.id) {
+                res.status(401).json({ message: "Unauthorized", success: false });
+            }
+            const userId = String(req.user?.id);
 
             const result = await viewAllArtclesService.execute(userId);
 
@@ -136,9 +140,8 @@ export class ArticleController {
             if (!req.user || !req.user.id) {
                 res.status(401).json({ message: "Unauthorized", success: false });
             }
-            const { articleType } = req.params;
-
             const userId: string = req.user.id;
+            const { articleType } = req.params;
 
             const result = await ViewMyArtclesService.execute(userId, articleType);
 

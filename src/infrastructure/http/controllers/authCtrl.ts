@@ -1,6 +1,6 @@
+import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import generateTokens from '../../../utils/jwt/generateToken';
-import { Request, Response } from "express";
 
 interface User {
     _id: string
