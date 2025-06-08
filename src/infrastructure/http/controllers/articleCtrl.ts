@@ -201,11 +201,15 @@ export class ArticleController {
         }
     }
 
-    async likeArticle(req: Request, res: Response): Promise<void> {
+    async likeArticle(req: any, res: Response): Promise<void> {
         try {
+            if (!req.user || !req.user.id) {
+                res.status(401).json({ message: "Unauthorized", success: false });
+            }
+            const userId = String(req.user?.id);
             const { articleId } = req.params;
 
-            const result = await likeArticleService.execute(articleId);
+            const result = await likeArticleService.execute(articleId, userId);
 
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],

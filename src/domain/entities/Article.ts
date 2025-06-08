@@ -12,39 +12,51 @@ export interface Article extends Document {
     category: string;
     likes: {
         users: string[];
+        total: number
     }
     dislikes: {
         users: string[];
+         total: number
     }
     createdAt: Date
 }
 
 //use tags for search
 export const ArticleSchema: Schema = new Schema({
-    userId: { type: String, requied: true },
-    author: { type: String, requied: true },
-    title: { type: String, requied: true },
-    subtitle: { type: String, requied: true },
-    description: { type: String, requied: true },
+    userId: { type: String, required: true },
+    author: { type: String, required: true },
+    title: { type: String, required: true },
+    subtitle: { type: String, required: true },
+    description: { type: String, required: true },
     status: {
         type: String,
         enum: ['unpublished', 'published', 'archived'],
         required: true
     },
-    image: { type: String, requied: true },
-    tags: [{ type: String, requied: true }],
-    category: { type: String, requied: true },
+    image: { type: String, required: true },
+    tags: [{ type: String, required: true }],
+    category: { type: String, required: true },
     likes: {
         users: {
-            type: [String], required: false
+            type: [String], 
+            default: []
+        },
+        total: {
+            type: Number,
+            default: 0
         }
     },
     dislikes: {
         users: {
-            type: [String], required: false
+            type: [String], 
+            default: []
+        },
+         total: {
+            type: Number,
+            default: 0
         }
     },
-    createdAt: { type: Date, requied: true },
+    createdAt: { type: Date, required: true },
 });
 
 export const ArticleModel = model("Article", ArticleSchema);

@@ -170,9 +170,11 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
     }
 
     async searchArticles(input: string): Promise<Article[]> {
+        console.log('input', input)
         const articles = await ArticleModel.find({
-            title: { $regex: input, $options: "i" },
+           tags: { $regex: input, $options: "i" },
         }).lean<Article[]>();
+        console.log('Found: ', articles)
         if (!articles) throw new Error("no article found");
         
         return articles;

@@ -10,7 +10,7 @@ export interface ArticleInterface {
     monoArticleView(articleId: string): Promise<Article>;
     editArticle(article: any): Promise<any>;
     deleteArticle(articleId: string): Promise<any>;
-    likeArticle(articleId: string): Promise<any>;
+    likeArticle(articleId: string, userId: string): Promise<any>;
     dislikeArticle(articleId: string): Promise<any>;
     searchArticles(input: string): Promise<Article[]>;
 }
