@@ -40,6 +40,7 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
 
         const articles = await ArticleModel.find({
             category: { $in: preferences },
+            status: "published"
         }).sort({createdAt: -1}).limit(pageSize).lean<Article>();
 
         if (!articles) throw new Error("no article found");

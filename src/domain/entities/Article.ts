@@ -10,8 +10,12 @@ export interface Article extends Document {
     image: string;
     tags: string[];
     category: string;
-    likes: number
-    distlikes: number
+    likes: {
+        users: string[];
+    }
+    dislikes: {
+        users: string[];
+    }
     createdAt: Date
 }
 
@@ -30,8 +34,16 @@ export const ArticleSchema: Schema = new Schema({
     image: { type: String, requied: true },
     tags: [{ type: String, requied: true }],
     category: { type: String, requied: true },
-    likes: { type: Number, requied: false },
-    dislikes: { type: Number, requied: false },
+    likes: {
+        users: {
+            type: [String], required: false
+        }
+    },
+    dislikes: {
+        users: {
+            type: [String], required: false
+        }
+    },
     createdAt: { type: Date, requied: true },
 });
 
