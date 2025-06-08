@@ -4,7 +4,7 @@ import { ArticleInterface } from "../../../domain/interfaces/Repositories/articl
 export class DislikeArticle {
     constructor(private articleInterface: ArticleInterface) { }
 
-    async execute(articleId: string): Promise<Article> {
-        return this.articleInterface.dislikeArticle(articleId);
+    async execute(articleId: string, userId: string): Promise<Article> {
+        return this.articleInterface.dislikeArticle(articleId, userId);
     }
 }

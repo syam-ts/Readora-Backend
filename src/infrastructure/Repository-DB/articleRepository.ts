@@ -166,8 +166,6 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
     async likeArticle(articleId: string, userId: string): Promise<any> {
 
         const existingLike = await this.hasUserLikedArticle(articleId, userId);
-
-        console.log('esit', existingLike);
         if (existingLike) throw new Error('Already liked the article')
 
         const likeArticle = await ArticleModel.findByIdAndUpdate(
@@ -186,11 +184,16 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
         return likeArticle;
     }
 
-    async dislikeArticle(articleId: string): Promise<any> {
+    async dislikeArticle(articleId: string, userId: string): Promise<any> {
+
+        const existingLike = await this.hasUserDisikedArticle(articleId, userId);
+        if (existingLike) throw new Error('Already disliked the article')
+console.log('useri', userId)
         const dislikeArticle = await ArticleModel.findByIdAndUpdate(
             articleId,
             {
-                $inc: { dislikes: 1 },
+                $push: {"dislikes.users": userId},
+                $inc: { "dislikes.total": 1 },
             },
             {
                 new: true,
@@ -201,6 +204,8 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
 
         return dislikeArticle;
     }
+
+     
 
     async searchArticles(input: string): Promise<Article[]> {
         console.log('input', input)

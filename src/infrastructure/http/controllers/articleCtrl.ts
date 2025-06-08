@@ -12,7 +12,8 @@ const {
     ViewMyArtclesService,
     editArticleService,
     deleteArticleService,
-    CheckIfUserLikedArticleService,
+    checkIfUserLikedArticleService,
+    checkIfUserDislikedArticleService,
     likeArticleService,
     dislikeArticleService,
     searchArticlesService,
@@ -201,7 +202,35 @@ export class ArticleController {
             const userId = String(req.user?.id);
             const { articleId } = req.params;
 
-            const result = await CheckIfUserLikedArticleService.execute(
+            const result = await checkIfUserLikedArticleService.execute(
+                articleId,
+                userId
+            );
+
+            res.status(HttpStatusCode.CREATED).json({
+                message: StatusMessage[HttpStatusCode.OK],
+                result,
+                success: true,
+            });
+        } catch (error: unknown) {
+            const err = error as { message: string };
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message: err.message,
+                success: false,
+            });
+            return;
+        }
+    }
+
+    async checkIfUserDisliked(req: any, res: Response): Promise<void> {
+        try {
+            if (!req.user || !req.user.id) {
+                res.status(401).json({ message: "Unauthorized", success: false });
+            }
+            const userId = String(req.user?.id);
+            const { articleId } = req.params;
+
+            const result = await checkIfUserDislikedArticleService.execute(
                 articleId,
                 userId
             );
@@ -246,11 +275,15 @@ export class ArticleController {
         }
     }
 
-    async dislikeArticle(req: Request, res: Response): Promise<void> {
+    async dislikeArticle(req: any, res: Response): Promise<void> {
         try {
+               if (!req.user || !req.user.id) {
+                res.status(401).json({ message: "Unauthorized", success: false });
+            }
+            const userId = String(req.user?.id);
             const { articleId } = req.params;
 
-            const result = await dislikeArticleService.execute(articleId);
+            const result = await dislikeArticleService.execute(articleId, userId);
 
             res.status(HttpStatusCode.CREATED).json({
                 message: StatusMessage[HttpStatusCode.OK],

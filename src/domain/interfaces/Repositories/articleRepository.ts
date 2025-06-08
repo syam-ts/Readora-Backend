@@ -13,6 +13,6 @@ export interface ArticleInterface {
     hasUserLikedArticle(articleId: string, userId: string): Promise<boolean>;
     hasUserDisikedArticle(articleId: string, userId: string): Promise<boolean>;
     likeArticle(articleId: string, userId: string): Promise<any>;
-    dislikeArticle(articleId: string): Promise<any>;
+    dislikeArticle(articleId: string, userId: string): Promise<any>;
     searchArticles(input: string): Promise<Article[]>;
 }

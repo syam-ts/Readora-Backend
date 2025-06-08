@@ -8,6 +8,7 @@ import { ViewMyArtcles } from "../../application/services/articles/viewMyArticle
 import { EditArticle } from "../../application/services/articles/editArticleService";
 import { DeleteArticle } from "../../application/services/articles/deleteArticleService";
 import { CheckIfUserLikedArticle } from "../../application/services/likes/CheckIfUserLikedArticleService";
+import { CheckIfUserDislikedArticle } from "../../application/services/likes/CheckIfUserDislikedArticleService";
 import { LikeArticle } from "../../application/services/likes/likeArticleService";
 import { DislikeArticle } from "../../application/services/likes/dislikeArticleService";
 import { SearchArticles } from "../../application/services/articles/searchArticlesService";
@@ -21,7 +22,8 @@ const archiveArticleService = new ArchiveArticle(new ArticleRepositoryMongoose()
 const ViewMyArtclesService = new ViewMyArtcles(new ArticleRepositoryMongoose());
 const editArticleService = new EditArticle(new ArticleRepositoryMongoose());
 const deleteArticleService = new DeleteArticle(new ArticleRepositoryMongoose());
-const CheckIfUserLikedArticleService = new CheckIfUserLikedArticle(new ArticleRepositoryMongoose());
+const checkIfUserLikedArticleService = new CheckIfUserLikedArticle(new ArticleRepositoryMongoose());
+const checkIfUserDislikedArticleService = new CheckIfUserDislikedArticle(new ArticleRepositoryMongoose());
 const likeArticleService = new LikeArticle(new ArticleRepositoryMongoose());
 const dislikeArticleService = new DislikeArticle(new ArticleRepositoryMongoose());
 const searchArticlesService = new SearchArticles(new ArticleRepositoryMongoose());
@@ -35,7 +37,8 @@ export const articleController = {
     ViewMyArtclesService,
     editArticleService,
     deleteArticleService,
-    CheckIfUserLikedArticleService,
+    checkIfUserLikedArticleService,
+    checkIfUserDislikedArticleService,
     likeArticleService,
     dislikeArticleService,
     searchArticlesService,
