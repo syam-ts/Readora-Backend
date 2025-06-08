@@ -33,7 +33,7 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
     async viewAllArticles(userId: string, loadMoreIndex: number): Promise<Article> {
         const user = await UserModel.findById(userId);
         if (!user) throw new Error("User not found");
-        
+
         // vertical pagination
         const pageSize: number = 9 * loadMoreIndex;
         const preferences = user.preferences;
@@ -41,7 +41,7 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
         const articles = await ArticleModel.find({
             category: { $in: preferences },
             status: "published"
-        }).sort({createdAt: -1}).limit(pageSize).lean<Article>();
+        }).sort({ createdAt: -1 }).limit(pageSize).lean<Article>();
 
         if (!articles) throw new Error("no article found");
 
@@ -137,11 +137,44 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
         return deleteArticle;
     }
 
-    async likeArticle(articleId: string): Promise<any> {
+    async hasUserLikedArticle(articleId: string, userId: string): Promise<boolean> {
+         const existingLike = await ArticleModel.findOne({
+            _id: articleId,
+            "likes.users": userId
+        });
+
+        if(existingLike) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    async hasUserDisikedArticle(articleId: string, userId: string): Promise<boolean> {
+         const existingDislike = await ArticleModel.findOne({
+            _id: articleId,
+            "dislikes.users": userId
+        });
+
+        if(existingDislike) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    async likeArticle(articleId: string, userId: string): Promise<any> {
+
+        const existingLike = await this.hasUserLikedArticle(articleId, userId);
+
+        console.log('esit', existingLike);
+        if (existingLike) throw new Error('Already liked the article')
+
         const likeArticle = await ArticleModel.findByIdAndUpdate(
             articleId,
             {
-                $inc: { likes: 1 },
+                $push: {"likes.users": userId},
+                $inc: { "likes.total": 1 },
             },
             {
                 new: true,
@@ -172,11 +205,11 @@ export class ArticleRepositoryMongoose implements ArticleInterface {
     async searchArticles(input: string): Promise<Article[]> {
         console.log('input', input)
         const articles = await ArticleModel.find({
-           tags: { $regex: input, $options: "i" },
+            tags: { $regex: input, $options: "i" },
         }).lean<Article[]>();
         console.log('Found: ', articles)
         if (!articles) throw new Error("no article found");
-        
+
         return articles;
     }
 }

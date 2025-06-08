@@ -13,6 +13,7 @@ const {
     publishArticle,
     archiveArticle,
     editArticle,
+    checkIfUserLiked,
     likeArticle,
     dislikeArticle,
     deleteArticle,
@@ -23,6 +24,7 @@ const {
 articleRouter.get("/viewAll", verifyToken, viewAllArticle);
 articleRouter.get("/view/:articleId", verifyToken, monoArticleView);
 articleRouter.get("/viewMy/:articleType", verifyToken, viewMyArticles);
+articleRouter.get("/like/:articleId", verifyToken, checkIfUserLiked)
 
 articleRouter.post("/create", verifyToken, crateArticle);
 articleRouter.post("/search/:input", verifyToken, searchArticles);
