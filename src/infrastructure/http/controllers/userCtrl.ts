@@ -131,11 +131,13 @@ export class UserController {
     }
 
     async editProfile(req: any, res: Response): Promise<void> {
+        console.log('first again')
         try {
             if (!req.user || !req.user.id) {
                 res.status(401).json({ message: "Unauthorized", success: false });
             }
             const userId = String(req.user?.id);
+            console.log('enter first')
             const result = await editProfileService.execute(req.body, userId);
 
             res.status(HttpStatusCode.CREATED).json({
@@ -144,6 +146,7 @@ export class UserController {
                 success: true,
             });
         } catch (error: unknown) {
+            console.log('er', error)
             const err = error as { message: string };
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
                 message: err.message,

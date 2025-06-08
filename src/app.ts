@@ -1,6 +1,7 @@
 import { connectDB } from "./infrastructure/database/db";
 import indexRouter from "./infrastructure/http/routes/index";
 import cookieparser from "cookie-parser";
+import bodyparser from 'body-parser';
 import http from "node:http";
 import path from "node:path";
 import express from "express";
@@ -11,6 +12,9 @@ dotenv.config({
 });
 
 const app = express();
+
+app.use(bodyparser.json({ limit: '10mb' }));
+app.use(bodyparser.urlencoded({ limit: '10mb', extended: true }));
 
 app.use(express.json());
 app.use(cookieparser());

@@ -44,9 +44,8 @@ export class UserRepositoryMongoose implements UserInterface {
         return { userId: savedUser._id };
     }
 
-    async verifyOtp(data: any): Promise<any> {
-
-        const { generatedOtp, inputOtp } = data;
+    async verifyOtp(data: any): Promise<any> { 
+        const { generatedOtp, inputOtp } = data.body;
         if (generatedOtp !== inputOtp) {
             throw new Error("Wrong OTP, Please send right OTP");
         }
