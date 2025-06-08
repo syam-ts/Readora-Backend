@@ -4,7 +4,7 @@ export class VerifyOtp {
     constructor(private userInterface: UserInterface) { }
 
     async execute(body: any): Promise<any> {
-        console.log('The data: ', body.data)
+        console.log('The data: ', body)
           
         const result = await this.userInterface.verifyOtp(body); 
         if (result) {
