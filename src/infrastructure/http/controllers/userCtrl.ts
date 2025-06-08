@@ -2,23 +2,19 @@ import { Request, Response } from "express";
 import generateToken from "../../../utils/jwt/generateToken";
 import { HttpStatusCode } from "../../../helper/contants/enums";
 import { StatusMessage } from "../../../helper/contants/statusMessages";
-import { UserSignup } from "../../../application/services/users/userSignupService";
-import { UserLogin } from "../../../application/services/users/userLoginService";
-import { VerifyOtp } from "../../../application/services/users/userVerifyOtpService";
-import { EditProfile } from "../../../application/services/users/editProfileService";
-import { ViewUserProfile } from "../../../application/services/users/viewUserProfileService";
-import { AddPreferences } from "../../../application/services/users/addPreferencesService";
-import { UserRepositoryMongoose } from "../../../infrastructure/Repository-DB/userRepositoryMongo";
+import { userController } from "../../../helper/controllerHelper/userCtrlHelper";
 
-const userSignupService = new UserSignup();
-const userLoginService = new UserLogin(new UserRepositoryMongoose());
-const verifyOtpService = new VerifyOtp(new UserRepositoryMongoose());
-const addPreferencesService = new AddPreferences(new UserRepositoryMongoose());
-const editProfileService = new EditProfile(new UserRepositoryMongoose());
-const viewUserProfileService = new ViewUserProfile(new UserRepositoryMongoose());
+const {
+    userSignupService,
+    userLoginService,
+    verifyOtpService,
+    addPreferencesService,
+    editProfileService,
+    viewUserProfileService,
+} = userController;
 
 export class UserController {
-    constructor() {}
+    constructor() { }
 
     async signupUser(req: any, res: Response): Promise<void> {
         try {
@@ -46,14 +42,13 @@ export class UserController {
     async loginUser(req: any, res: Response): Promise<void> {
         try {
             const user = await userLoginService.execute(req.body);
-            const { accessToken, refreshToken } = generateToken(user); 
+            const { accessToken, refreshToken } = generateToken(user);
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
             });
-          
 
             res.status(HttpStatusCode.OK).json({
                 message: StatusMessage[HttpStatusCode.OK],
